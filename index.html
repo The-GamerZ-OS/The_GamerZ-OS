@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GamerZ OS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        :root { --accent: #2ecc71; --bg: #000; --win-bg: #111; --text: #fff; --chat-green: #075e54; --font-main: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-main); margin: 0; padding: 0; height: 100vh; overflow: hidden; user-select: none; }
+        #wallpaper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; background-size: cover; background-position: center; }
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 4000; }
+        .auth-box { border: 4px solid #fff; padding: 40px; width: 320px; text-align: center; box-shadow: 10px 10px 0px #333; background: #111; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #fff; background: #222; color: #fff; font-weight: bold; outline: none; box-sizing: border-box; }
+        .btn-row { display: flex; gap: 10px; margin-top: 10px; }
+        .guest-btn { display: block; margin-top: 20px; color: #888; font-size: 11px; cursor: pointer; text-decoration: underline; border: none; background: none; width: 100%; }
+        #home-screen { display: none; height: 100vh; width: 100vw; position: relative; }
+        #desktop { flex-grow: 1; position: relative; width: 100%; height: calc(100vh - 60px); }
+        #nickname-display { position: absolute; bottom: 80px; left: 20px; font-weight: 900; font-size: 24px; color: var(--accent); text-shadow: 3px 3px #000; z-index: 100; text-transform: uppercase; letter-spacing: 2px; display: flex; flex-direction: column; }
+        .rank-tag { font-size: 12px; margin-top: 5px; letter-spacing: 1px; }
+        .os-window { display: none; position: fixed; top: 80px; left: 120px; width: 450px; height: 350px; background: var(--win-bg); color: #fff; border: 3px solid #fff; box-shadow: 12px 12px 0px #000; z-index: 500; flex-direction: column; transition: width 0.2s, height 0.2s, top 0.2s, left 0.2s; }
+        .window-header { background: #fff; color: #000; padding: 10px; display: flex; justify-content: space-between; font-weight: bold; cursor: move; align-items: center; font-size: 12px; }
+        .win-controls { display: flex; gap: 10px; align-items: center; }
+        .win-btn { cursor: pointer; font-weight: bold; border: none; background: none; font-size: 14px; padding: 0 5px; }
+        .win-close { color: red; font-size: 16px; }
+        #chat-pro-win { width: 400px; height: 500px; background: #e5ddd5; color: #000; }
+        #chat-hub { padding: 20px; text-align: center; background: var(--chat-green); color: white; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
+        #chat-interface-pro { display: none; flex-direction: column; height: calc(100% - 40px); background: #e5ddd5; }
+        #chat-pro-log { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .p-msg { padding: 8px 12px; border-radius: 10px; max-width: 80%; font-size: 13px; margin: 2px 0; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+        .p-sent { background: #dcf8c6; align-self: flex-end; }
+        .p-received { background: #fff; align-self: flex-start; }
+        .p-tag { font-size: 9px; font-weight: bold; display: block; color: var(--chat-green); }
+        #taskbar { height: 60px; background: #111; border-top: 4px solid #fff; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; z-index: 2000; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; }
+        .os-btn { background: #fff; color: #000; border: 2px solid #fff; padding: 8px 15px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; margin-right: 8px; transition: 0.2s; }
+        .os-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .rank-owner { background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; filter: drop-shadow(0 0 2px rgba(255,255,255,0.5)); }
+        .rank-admin { color: #ff4757 !important; text-shadow: 0 0 8px #ff4757; }
+        .rank-vip { color: #1e90ff !important; font-style: italic; }
+        .app-container { position: absolute; width: 90px; text-align: center; cursor: pointer; z-index: 10; transition: transform 0.1s; }
+        .icon-box { width: 55px; height: 55px; background: #222; border: 3px solid #fff; box-shadow: 4px 4px 0px #333; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+        .app-label { font-weight: bold; font-size: 10px; background: #000; padding: 2px 5px; border: 1px solid #fff; color: #fff; }
+        .del-btn { position: absolute; top: -5px; right: 5px; background: red; color: #fff; border: 2px solid #fff; border-radius: 50%; width: 20px; height: 20px; font-weight: bold; display: none; }
+        .app-container:hover .del-btn { display: block; }
+        #notes-area { flex: 1; background: #000; color: var(--accent); border: none; padding: 15px; font-family: monospace; outline: none; resize: none; }
+        .friend-row { padding: 8px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .setting-section { margin-top: 15px; padding-top: 10px; border-top: 1px solid #333; }
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; margin: 5px 0; }
+        #gfiles-content { flex: 1; padding: 15px; overflow-y: auto; background: #000; }
+        .file-entry { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #333; gap: 15px; }
+        .file-entry:hover { background: #1a1a1a; }
+        .file-info { flex: 1; }
+        .file-name { font-weight: bold; font-size: 14px; display: block; }
+        .file-meta { font-size: 10px; color: #888; }
+        .calc-btn { background:#222; color:#fff; border:2px solid #444; font-size:16px; font-weight:bold; cursor:pointer; border-radius:4px; transition:0.1s; }
+        .calc-btn:hover { background:#333; border-color:#fff; }
+        .calc-op { color:var(--accent); border-color:var(--accent); }
+
+        /* MOBILE STYLES */
+        @media (max-width: 768px) {
+            .auth-box { width: 85vw; padding: 25px; }
+            .os-window { width: 100vw !important; height: calc(100vh - 70px) !important; top: 0 !important; left: 0 !important; box-shadow: none !important; border-left: none; border-right: none; }
+            .window-header { padding: 14px; font-size: 14px; }
+            .win-btn { font-size: 18px; padding: 0 8px; }
+            #taskbar { height: 70px; padding: 0 10px; overflow-x: auto; }
+            .os-btn { padding: 10px 12px; font-size: 10px; margin-right: 5px; white-space: nowrap; }
+            #nickname-display { font-size: 16px; bottom: 85px; }
+            .app-container { width: 80px; }
+            .icon-box { width: 50px; height: 50px; font-size: 22px; }
+            .app-label { font-size: 9px; }
+            #desktop { height: calc(100vh - 70px); }
+            .app-container:hover .del-btn { display: none; }
+            .app-container:active .del-btn { display: block; }
+            input, select { padding: 14px; font-size: 16px; }
+            .calc-btn { font-size: 20px; }
+            #clock { font-size: 11px; white-space: nowrap; }
+            .p-msg { font-size: 15px; }
+            #chat-pro-win { width: 100vw !important; height: calc(100vh - 70px) !important; }
+        }
+    </style>
+</head>
+<body>
+    <div id="wallpaper"></div>
+    <div id="nickname-display" style="flex-direction:row; align-items:center; gap:12px;">
+        <img id="hud-avatar" src="" alt="" style="display:none; width:48px; height:48px; border-radius:50%; border:3px solid var(--accent); object-fit:cover;">
+        <div style="display:flex; flex-direction:column;">
+            <span></span>
+            <div id="rank-badge" class="rank-tag"></div>
+        </div>
+    </div>
+
+    <div id="auth-overlay">
+        <div class="auth-box">
+            <h1 style="letter-spacing:5px;">GAMERZ OS</h1>
+            <input type="text" id="login-id" placeholder="NICKNAME OR EMAIL">
+            <input type="password" id="password" placeholder="PASSWORD">
+            <div class="btn-row">
+                <button class="os-btn" style="flex:1;" onclick="handleAuth('login')">SIGN IN</button>
+                <button class="os-btn" style="flex:1;" onclick="handleAuth('signup')">SIGN UP</button>
+            </div>
+            <button class="os-btn" style="width:100%; margin-top:10px; font-size:9px; background:#444; color:#fff;" onclick="sendResetEmail()">FORGOT PASSWORD?</button>
+            <button class="guest-btn" onclick="enterGuest()">TRYOUT / GUEST MODE</button>
+        </div>
+    </div>
+
+    <div id="home-screen">
+        <div id="desktop"></div>
+
+        <div id="gfiles-win" class="os-window">
+            <div class="window-header">
+                <span>G-FILES (EXPLORER)</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('gfiles-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('gfiles-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:10px; border-bottom:1px solid #fff; display:flex; gap:10px; background:#222;">
+                <input type="file" id="gfile-picker" style="display:none" onchange="processFileUpload(this)">
+                <button class="os-btn" onclick="document.getElementById('gfile-picker').click()">UPLOAD FILE</button>
+                <div style="margin-left:auto; font-size:10px; align-self:center; color:var(--accent);">STORAGE: LOCAL SESSION</div>
+            </div>
+            <div id="gfiles-content">
+                <div style="text-align:center; color:#555; margin-top:50px;">No files uploaded yet.</div>
+            </div>
+        </div>
+
+        <div id="chat-pro-win" class="os-window">
+            <div class="window-header">
+                <span>G-CHAT PRO</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('chat-pro-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeChatPro()">✖</button>
+                </div>
+            </div>
+            <div id="chat-hub">
+                <h3>MESSENGER</h3>
+                <button class="os-btn" style="width:100%; margin-bottom:15px;" onclick="joinChat('global')">GLOBAL CHAT</button>
+                <div style="border-top:1px solid #fff; padding-top:20px;">
+                    <input type="text" id="target-user" placeholder="Nickname or Email" style="background:#fff; color:#000; border:1px solid #ccc;">
+                    <button class="os-btn" style="width:100%; background:#25d366; color:#fff; border:none;" onclick="joinChat('private')">SEND PRIVATE MSG</button>
+                </div>
+            </div>
+            <div id="chat-interface-pro">
+                <div id="chat-pro-header" style="background:#075e54; color:#fff; padding:10px; font-size:12px; font-weight:bold;">ROOM</div>
+                <div id="chat-pro-log"></div>
+                <div style="padding:10px; display:flex; gap:5px; background:#f0f0f0;">
+                    <input type="text" id="msg-pro-input" placeholder="Type message..." style="flex:1; margin:0; border-radius:20px; border:1px solid #ccc; background:#fff; color:#000;">
+                    <button onclick="postProMsg()" style="background:#25d366; border:none; color:white; border-radius:50%; width:40px; height:40px;">➔</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="settings-win" class="os-window" style="width:340px; height:620px;">
+            <div class="window-header">
+                <span>SYSTEM SETTINGS</span>
+                <div class="win-controls">
+                    <button class="win-btn" style="background:var(--accent); color:#000; padding:3px 8px; font-size:10px;" onclick="saveSettings()">APPLY</button>
+                    <button class="win-btn" onclick="toggleFullscreen('settings-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('settings-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:20px; overflow-y:auto;">
+                <div id="admin-panel" style="display:none; margin-bottom: 20px; padding: 10px; border: 2px dashed var(--accent); background: #1a1a1a;">
+                    <label style="font-size:10px; color:var(--accent); font-weight:bold;">RANK MANAGER (ADMIN)</label>
+                    <input type="text" id="target-rank-email" placeholder="User Email/ID">
+                    <select id="rank-select">
+                        <option value="Member">Member</option>
+                        <option value="VIP">VIP</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Owner">Owner</option>
+                    </select>
+                    <button class="os-btn" style="width:100%; font-size:10px;" onclick="promoteUser()">SET RANK</button>
+                </div>
+                <label style="font-size:10px; color:var(--accent);">DISPLAY NICKNAME</label>
+                <input type="text" id="nick-input">
+                <button class="os-btn" style="width:100%; font-size:9px; margin-top:4px;" onclick="db.collection('users').doc(auth.currentUser.uid).update({nickname: document.getElementById('nick-input').value}); document.getElementById('nav-user').innerText = document.getElementById('nick-input').value.toUpperCase(); document.getElementById('nickname-display').querySelector('span').innerText = document.getElementById('nick-input').value;">APPLY NICKNAME</button>
+
+                <label style="font-size:10px; color:var(--accent); margin-top:10px; display:block;">WALLPAPER URL</label>
+                <input type="text" id="bg-input">
+                <button class="os-btn" style="width:100%; font-size:9px; margin-top:4px;" onclick="document.getElementById('wallpaper').style.backgroundImage = 'url(' + document.getElementById('bg-input').value + ')'; if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({bg: document.getElementById('bg-input').value});">APPLY WALLPAPER</button>
+
+                <label style="font-size:10px; color:var(--accent); margin-top:10px; display:block;">PROFILE PICTURE URL</label>
+                <input type="text" id="avatar-input" placeholder="https://...">
+                <button class="os-btn" style="width:100%; font-size:9px; margin-top:4px;" onclick="setAvatar()">SET AVATAR</button>
+
+                <div class="setting-section">
+                    <label style="font-size:10px; color:var(--accent);">ACCENT COLOR</label>
+                    <input type="color" id="color-input" style="height:40px; padding:2px;">
+                    <button class="os-btn" style="width:100%; font-size:9px; margin-top:4px;" onclick="document.documentElement.style.setProperty('--accent', document.getElementById('color-input').value); if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({accent: document.getElementById('color-input').value});">APPLY COLOR</button>
+
+                    <label style="font-size:10px; color:var(--accent); margin-top:10px; display:block;">SYSTEM FONT</label>
+                    <select id="font-input">
+                        <option value="'Segoe UI', sans-serif">Modern (Standard)</option>
+                        <option value="'Courier New', monospace">Terminal (Retro)</option>
+                        <option value="Georgia, serif">Classic (Serif)</option>
+                        <option value="Impact, sans-serif">Bold (Gamer)</option>
+                    </select>
+                    <button class="os-btn" style="width:100%; font-size:9px; margin-top:4px;" onclick="document.documentElement.style.setProperty('--font-main', document.getElementById('font-input').value); if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({font: document.getElementById('font-input').value});">APPLY FONT</button>
+
+                    <div class="toggle-row">
+                        <label style="font-size:10px; color:var(--accent);">SNAP TO GRID</label>
+                        <input type="checkbox" id="grid-toggle" style="width:20px;" checked>
+                    </div>
+                    <button class="os-btn" style="width:100%; font-size:9px; margin-top:4px;" onclick="if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({useGrid: document.getElementById('grid-toggle').checked});">APPLY GRID</button>
+                </div>
+                <button class="os-btn" style="width:100%; margin-top:10px;" onclick="saveSettings()">APPLY ALL</button>
+                <div class="setting-section">
+                    <label style="font-size:10px; color:var(--accent);">ACCOUNT SECURITY</label>
+                    <input type="email" id="new-email-input" placeholder="New email...">
+                    <button class="os-btn" style="width:100%; font-size:9px;" onclick="updateUserEmail()">UPDATE EMAIL</button>
+                    <input type="password" id="new-pw-input" placeholder="New password...">
+                    <button class="os-btn" style="width:100%; font-size:9px;" onclick="updateUserPassword()">UPDATE PASSWORD</button>
+                </div>
+                <button class="os-btn" style="width:100%; margin-top:20px; background:red; color:#fff;" onclick="logout()">LOGOUT</button>
+            </div>
+        </div>
+
+        <div id="friends-win" class="os-window">
+            <div class="window-header">
+                <span>FRIENDS</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('friends-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('friends-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:10px; border-bottom:1px solid #fff;">
+                <input type="text" id="friend-email" placeholder="Friend Email...">
+                <button class="os-btn" style="width:100%;" onclick="addFriend()">ADD FRIEND</button>
+            </div>
+            <div id="friends-list" style="overflow-y:auto; flex:1; padding:5px;"></div>
+        </div>
+
+        <div id="notes-win" class="os-window">
+            <div class="window-header">
+                <span>G-NOTES</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('notes-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('notes-win')">✖</button>
+                </div>
+            </div>
+            <textarea id="notes-area" oninput="syncNotes()" placeholder="Cloud syncing active..."></textarea>
+        </div>
+
+        <div id="add-app-win" class="os-window" style="width:300px; height:250px;">
+            <div class="window-header">
+                <span>CREATE APP</span>
+                <div class="win-controls">
+                    <button class="win-btn win-close" onclick="closeWin('add-app-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:15px;">
+                <input type="text" id="cust-name" placeholder="App Name">
+                <input type="text" id="cust-url" placeholder="URL (https://...)">
+                <button class="os-btn" style="width:100%; margin-top:10px;" onclick="addCustom()">CREATE</button>
+            </div>
+        </div>
+
+        <div id="store-win" class="os-window">
+            <div class="window-header">
+                <span>G-STORE</span>
+                <div class="win-controls">
+                    <button class="win-btn win-close" onclick="closeWin('store-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:15px; overflow-y:auto; flex:1;">
+                <button class="os-btn" style="width:100%; margin-bottom:5px; background: #ce1126; color: #fff; border: none;" onclick="installApp('Roblox', 'roblox://', '🟥')">INSTALL ROBLOX</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px; background: #3498db; color: #fff; border: none;" onclick="installApp('G-Files', 'gfiles-win', '📁')">INSTALL G-FILES</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Chat Pro', 'chat-pro-win', '💬')">INSTALL G-CHAT PRO</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Friends', 'friends-win', '👥')">INSTALL FRIENDS</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Notes', 'notes-win', '📝')">INSTALL NOTES</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Snake', 'snake-win', '🐍')">INSTALL SNAKE</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Games', 'games-win', '🎮')">INSTALL G-GAMES</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Calculator', 'calc-win', '🔢')">INSTALL CALCULATOR</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Clock', 'clock-win', '⏱️')">INSTALL CLOCK / TIMER</button>
+                <button class="os-btn" style="width:100%;" onclick="installApp('Settings', 'settings-win', '⚙️')">INSTALL SETTINGS</button>
+            </div>
+        </div>
+
+        <div id="snake-win" class="os-window" style="width:340px; height:420px;">
+            <div class="window-header">
+                <span>SNAKE</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('snake-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('snake-win')">✖</button>
+                </div>
+            </div>
+            <canvas id="snake-canvas" width="300" height="300" style="background:#000; margin:10px auto; display:block; border:2px solid #fff;"></canvas>
+            <button class="os-btn" onclick="startSnake()" style="margin:0 20px;">START</button>
+        </div>
+
+        <!-- GAMES APP - ADDED -->
+        <div id="games-win" class="os-window" style="width:520px; height:580px;">
+            <div class="window-header">
+                <span>🎮 G-GAMES</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('games-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('games-win')">✖</button>
+                </div>
+            </div>
+            <div id="games-list" style="padding:10px; background:#111; border-bottom:1px solid #333; display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                <button class="os-btn" style="font-size:10px;" onclick="loadGame('https://classroom2111.github.io/g69/class-583')">HIGHWAY TRAFFIC</button>
+                <button id="add-game-btn" style="display:none; font-size:10px; background:var(--accent); color:#000; border:2px solid var(--accent); padding:8px 15px; cursor:pointer; font-weight:bold; text-transform:uppercase;" onclick="toggleAddGameForm()">+ ADD GAME</button>
+            </div>
+            <div id="add-game-form" style="display:none; padding:10px; background:#1a1a1a; border-bottom:1px solid #333; gap:8px; flex-direction:column;">
+                <input type="text" id="new-game-name" placeholder="Game Name" style="margin:0;">
+                <input type="text" id="new-game-iframe" placeholder="Paste iframe code here" style="margin:0;">
+                <button class="os-btn" style="width:100%; font-size:10px;" onclick="submitNewGame()">ADD TO ALL USERS</button>
+            </div>
+            <div id="games-frame-container" style="flex:1; background:#000; overflow:hidden; position:relative;">
+                <div style="color:#555; text-align:center; margin-top:60px; font-size:12px;">SELECT A GAME ABOVE</div>
+            </div>
+        </div>
+
+        <!-- CALCULATOR APP - ADDED -->
+        <div id="calc-win" class="os-window" style="width:300px; height:420px;">
+            <div class="window-header">
+                <span>🔢 CALCULATOR</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('calc-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('calc-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:15px; display:flex; flex-direction:column; gap:8px; height:100%; box-sizing:border-box;">
+                <div id="calc-display" style="background:#000; color:var(--accent); font-size:28px; font-weight:900; text-align:right; padding:10px 15px; border:2px solid #fff; min-height:55px; word-break:break-all;">0</div>
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px; flex:1;">
+                    <button class="calc-btn" style="grid-column:span 2;" onclick="calcClear()">AC</button>
+                    <button class="calc-btn" onclick="calcInput('%')">%</button>
+                    <button class="calc-btn calc-op" onclick="calcInput('/')">÷</button>
+
+                    <button class="calc-btn" onclick="calcInput('7')">7</button>
+                    <button class="calc-btn" onclick="calcInput('8')">8</button>
+                    <button class="calc-btn" onclick="calcInput('9')">9</button>
+                    <button class="calc-btn calc-op" onclick="calcInput('*')">×</button>
+
+                    <button class="calc-btn" onclick="calcInput('4')">4</button>
+                    <button class="calc-btn" onclick="calcInput('5')">5</button>
+                    <button class="calc-btn" onclick="calcInput('6')">6</button>
+                    <button class="calc-btn calc-op" onclick="calcInput('-')">−</button>
+
+                    <button class="calc-btn" onclick="calcInput('1')">1</button>
+                    <button class="calc-btn" onclick="calcInput('2')">2</button>
+                    <button class="calc-btn" onclick="calcInput('3')">3</button>
+                    <button class="calc-btn calc-op" onclick="calcInput('+')">+</button>
+
+                    <button class="calc-btn" onclick="calcInput('0')" style="grid-column:span 2;">0</button>
+                    <button class="calc-btn" onclick="calcInput('.')">.</button>
+                    <button class="calc-btn" style="background:var(--accent); color:#000;" onclick="calcEquals()">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLOCK APP - ADDED -->
+        <div id="clock-win" class="os-window" style="width:380px; height:420px;">
+            <div class="window-header">
+                <span>⏱️ CLOCK</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('clock-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('clock-win')">✖</button>
+                </div>
+            </div>
+            <!-- TAB BAR -->
+            <div style="display:flex; border-bottom:2px solid #fff; background:#111;">
+                <button id="tab-stopwatch" onclick="clockTab('stopwatch')" style="flex:1; padding:8px; font-weight:bold; font-size:11px; cursor:pointer; background:var(--accent); color:#000; border:none; text-transform:uppercase;">STOPWATCH</button>
+                <button id="tab-timer" onclick="clockTab('timer')" style="flex:1; padding:8px; font-weight:bold; font-size:11px; cursor:pointer; background:#222; color:#fff; border:none; text-transform:uppercase;">TIMER</button>
+                <button id="tab-alarm" onclick="clockTab('alarm')" style="flex:1; padding:8px; font-weight:bold; font-size:11px; cursor:pointer; background:#222; color:#fff; border:none; text-transform:uppercase;">ALARM</button>
+            </div>
+
+            <!-- STOPWATCH -->
+            <div id="panel-stopwatch" style="padding:20px; display:flex; flex-direction:column; align-items:center; gap:15px;">
+                <div id="sw-display" style="font-size:48px; font-weight:900; color:var(--accent); letter-spacing:4px;">00:00.00</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="os-btn" onclick="swStart()">START</button>
+                    <button class="os-btn" onclick="swStop()">STOP</button>
+                    <button class="os-btn" onclick="swReset()">RESET</button>
+                </div>
+            </div>
+
+            <!-- TIMER -->
+            <div id="panel-timer" style="padding:20px; display:none; flex-direction:column; align-items:center; gap:15px;">
+                <div id="tm-display" style="font-size:48px; font-weight:900; color:var(--accent); letter-spacing:4px;">00:00</div>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="number" id="tm-min" placeholder="MM" min="0" max="99" style="width:70px; text-align:center; font-size:18px; margin:0;">
+                    <span style="font-size:20px; font-weight:900;">:</span>
+                    <input type="number" id="tm-sec" placeholder="SS" min="0" max="59" style="width:70px; text-align:center; font-size:18px; margin:0;">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="os-btn" onclick="tmStart()">START</button>
+                    <button class="os-btn" onclick="tmStop()">STOP</button>
+                    <button class="os-btn" onclick="tmReset()">RESET</button>
+                </div>
+            </div>
+
+            <!-- ALARM -->
+            <div id="panel-alarm" style="padding:20px; display:none; flex-direction:column; align-items:center; gap:15px;">
+                <div id="al-clock" style="font-size:36px; font-weight:900; color:var(--accent); letter-spacing:3px;">--:--:--</div>
+                <input type="time" id="al-time" style="font-size:18px; text-align:center; margin:0;">
+                <div style="display:flex; gap:10px;">
+                    <button class="os-btn" onclick="alSet()">SET ALARM</button>
+                    <button class="os-btn" onclick="alClear()">CLEAR</button>
+                </div>
+                <div id="al-status" style="font-size:11px; color:#888;">NO ALARM SET</div>
+            </div>
+        </div>
+
+        <div id="taskbar">
+            <div style="display:flex; align-items:center;">
+                <img id="taskbar-avatar" src="" alt="" style="display:none; width:34px; height:34px; border-radius:50%; border:2px solid #fff; object-fit:cover; margin-right:8px;">
+                <div id="nav-user" style="font-weight:900; background:#fff; color:#000; padding:5px 10px; margin-right:10px; font-size:10px;">USER</div>
+                <button class="os-btn" onclick="openWin('add-app-win')">+ APP</button>
+                <button class="os-btn" onclick="openWin('store-win')">STORE</button>
+                <button class="os-btn" onclick="toggleSystemFullscreen()" style="background:var(--accent); color:#000;">⛶ FULLSCREEN</button>
+            </div>
+            <div id="clock" style="font-weight:900;">00:00</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD0Pl0zqyHVP1zfXm2ZLalrmLU1glP6U-0",
+            authDomain: "gamerz-os.firebaseapp.com",
+            projectId: "gamerz-os",
+            storageBucket: "gamerz-os.firebasestorage.app",
+            messagingSenderId: "477372507172",
+            appId: "1:477372507172:web:836936398b86901c1b64b1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let userData = { apps: [], notes: "", friends: [], bg: "", nickname: "", accent: "#2ecc71", font: "'Segoe UI', sans-serif", useGrid: true, rank: "Member" };
+        let topZ = 1000;
+        let currentRoom = "";
+        let winRestoreStates = {};
+        let sessionFiles = [];
+
+        function handleAuth(mode) {
+            const id = document.getElementById('login-id').value;
+            const p = document.getElementById('password').value;
+            let email = id.includes('@') ? id : id.toLowerCase().trim() + "@gamerzos.com";
+            if(mode === 'login') auth.signInWithEmailAndPassword(email, p).catch(err => alert(err.message));
+            else {
+                auth.createUserWithEmailAndPassword(email, p).then(cred => {
+                    db.collection("users").doc(cred.user.uid).set({
+                        nickname: id.includes('@') ? id.split('@')[0] : id,
+                        rank: "Member",
+                        apps: [], notes: "", friends: [], bg: "", accent: "#2ecc71", font: "'Segoe UI', sans-serif", useGrid: true
+                    });
+                }).catch(err => alert(err.message));
+            }
+        }
+
+        function sendResetEmail() {
+            const id = document.getElementById('login-id').value;
+            if (!id) return alert("Enter your Nickname/Email first!");
+            let email = id.includes('@') ? id : id.toLowerCase().trim() + "@gamerzos.com";
+            auth.sendPasswordResetEmail(email).then(() => alert("Recovery email sent!")).catch(err => alert(err.message));
+        }
+
+        function updateUserEmail() {
+            const user = auth.currentUser;
+            const newEmail = document.getElementById('new-email-input').value;
+            if (!newEmail) return;
+            user.updateEmail(newEmail).then(() => { alert("Email updated!"); }).catch(err => alert("Re-login required for security."));
+        }
+
+        function updateUserPassword() {
+            const user = auth.currentUser;
+            const newPw = document.getElementById('new-pw-input').value;
+            if (newPw.length < 6) return alert("Min 6 characters");
+            user.updatePassword(newPw).then(() => { alert("Password updated!"); }).catch(err => alert("Re-login required for security."));
+        }
+
+        function enterGuest() {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'block';
+            document.getElementById('nickname-display').firstChild.innerText = "GUEST";
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                if (user.email === 'liamdunleavy.club@gmail.com') {
+                    db.collection("users").doc(user.uid).update({ rank: "Owner" });
+                }
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('home-screen').style.display = 'block';
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    userData = doc.data() || userData;
+                    applyUserTheme();
+                    renderDesktop();
+                    renderFriends();
+                });
+            }
+        });
+
+        function applyUserTheme() {
+            const r = document.documentElement;
+            r.style.setProperty('--accent', userData.accent || "#2ecc71");
+            r.style.setProperty('--font-main', userData.font || "'Segoe UI', sans-serif");
+            if(userData.bg) document.getElementById('wallpaper').style.backgroundImage = `url('${userData.bg}')`;
+            if(userData.notes) document.getElementById('notes-area').value = userData.notes;
+            if(userData.nickname) {
+                document.getElementById('nickname-display').querySelector('span').innerText = userData.nickname;
+                document.getElementById('nav-user').innerText = userData.nickname.toUpperCase();
+                document.getElementById('nick-input').value = userData.nickname;
+            }
+            const rank = userData.rank || "Member";
+            const rb = document.getElementById('rank-badge');
+            rb.innerText = `[${rank.toUpperCase()}]`;
+            rb.className = "rank-tag";
+            if(rank === 'Owner') rb.classList.add('rank-owner');
+            if(rank === 'Admin') rb.classList.add('rank-admin');
+            if(rank === 'VIP') rb.classList.add('rank-vip');
+            if(rank === 'Admin' || rank === 'Owner') {
+                document.getElementById('admin-panel').style.display = 'block';
+            }
+            if(rank === 'Owner') {
+                document.getElementById('add-game-btn').style.display = 'inline-block';
+            }
+            document.getElementById('color-input').value = userData.accent || "#2ecc71";
+            document.getElementById('font-input').value = userData.font || "'Segoe UI', sans-serif";
+            document.getElementById('grid-toggle').checked = userData.useGrid !== false;
+            document.getElementById('bg-input').value = userData.bg || "";
+
+            const avatar = userData.avatar || "";
+            const hudAvatar = document.getElementById('hud-avatar');
+            const taskbarAvatar = document.getElementById('taskbar-avatar');
+            if(avatar) {
+                hudAvatar.src = avatar; hudAvatar.style.display = 'block';
+                taskbarAvatar.src = avatar; taskbarAvatar.style.display = 'inline-block';
+            } else {
+                hudAvatar.style.display = 'none';
+                taskbarAvatar.style.display = 'none';
+            }
+            document.getElementById('avatar-input').value = avatar;
+        }
+
+        async function promoteUser() {
+            const target = document.getElementById('target-rank-email').value.toLowerCase().trim();
+            const newRank = document.getElementById('rank-select').value;
+            if(!target) return alert("Enter target email!");
+            const snapshot = await db.collection("users").get();
+            let found = false;
+            snapshot.forEach(doc => {
+                if(doc.id.includes(target.split('@')[0]) || (doc.data().nickname && doc.data().nickname.toLowerCase() === target)) {
+                    db.collection("users").doc(doc.id).update({ rank: newRank });
+                    found = true;
+                    alert("User rank updated to " + newRank);
+                }
+            });
+            if(!found) alert("User not found!");
+        }
+
+        function processFileUpload(input) {
+            const file = input.files[0];
+            if(!file) return;
+            const fileData = {
+                name: file.name,
+                size: (file.size / 1024).toFixed(2) + " KB",
+                type: file.type || "Unknown File",
+                icon: getFileIcon(file.name)
+            };
+            sessionFiles.push(fileData);
+            renderFileList();
+            input.value = "";
+        }
+
+        function getFileIcon(name) {
+            if(name.endsWith('.exe')) return '⚙️';
+            if(name.match(/\.(jpg|jpeg|png|gif)$/i)) return '🖼️';
+            if(name.endsWith('.txt')) return '📄';
+            if(name.endsWith('.html')) return '🌐';
+            return '📄';
+        }
+
+        function renderFileList() {
+            const container = document.getElementById('gfiles-content');
+            if(sessionFiles.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color:#555; margin-top:50px;">No files uploaded yet.</div>`;
+                return;
+            }
+            container.innerHTML = "";
+            sessionFiles.forEach(f => {
+                container.innerHTML += `<div class="file-entry"><div style="font-size:24px;">${f.icon}</div><div class="file-info"><span class="file-name">${f.name}</span><span class="file-meta">${f.type} • ${f.size}</span></div></div>`;
+            });
+        }
+
+        async function joinChat(type) {
+            let myName = userData.nickname || "User";
+            if(type === 'global') { currentRoom = "gamerz_global_hub"; }
+            else {
+                const target = document.getElementById('target-user').value.trim().toLowerCase();
+                if(!target) return alert("Enter target nickname!");
+                let names = [myName.toLowerCase(), target].sort();
+                currentRoom = `gamerz_dm_${names[0]}_${names[1]}`;
+            }
+            document.getElementById('chat-hub').style.display = 'none';
+            document.getElementById('chat-interface-pro').style.display = 'flex';
+            document.getElementById('chat-pro-header').innerText = "ROOM: " + currentRoom.toUpperCase();
+            listenToChat();
+        }
+
+        async function listenToChat() {
+            const res = await fetch(`https://ntfy.sh/${currentRoom}/json`);
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            const log = document.getElementById('chat-pro-log');
+            log.innerHTML = "";
+            while(currentRoom !== "") {
+                const {done, value} = await reader.read();
+                if(done) break;
+                decoder.decode(value).split('\n').filter(Boolean).forEach(line => {
+                    try {
+                        const data = JSON.parse(JSON.parse(line).message);
+                        const isMe = data.u === (userData.nickname || "User");
+                        let rClass = "";
+                        if(data.r === 'Owner') rClass = "rank-owner";
+                        else if(data.r === 'Admin') rClass = "rank-admin";
+                        else if(data.r === 'VIP') rClass = "rank-vip";
+                        log.innerHTML += `<div class="p-msg ${isMe ? 'p-sent' : 'p-received'}"><span class="p-tag ${rClass}">[${data.r || 'Member'}] ${data.u}</span>${data.t}</div>`;
+                        log.scrollTop = log.scrollHeight;
+                    } catch(e) {}
+                });
+            }
+        }
+
+        async function postProMsg() {
+            const i = document.getElementById('msg-pro-input');
+            if(!i.value) return;
+            await fetch("https://ntfy.sh/" + currentRoom, {
+                method: 'POST',
+                body: JSON.stringify({ u: userData.nickname || "User", r: userData.rank || "Member", t: i.value })
+            });
+            i.value = "";
+        }
+
+        function closeChatPro() {
+            currentRoom = "";
+            document.getElementById('chat-hub').style.display = 'flex';
+            document.getElementById('chat-interface-pro').style.display = 'none';
+            closeWin('chat-pro-win');
+        }
+
+        function renderDesktop() {
+            const d = document.getElementById('desktop'); d.innerHTML = '';
+            (userData.apps || []).forEach(app => {
+                const div = document.createElement('div');
+                div.className = 'app-container';
+                div.style.left = app.x || '30px'; div.style.top = app.y || '30px';
+                div.innerHTML = `<div class="del-btn" onclick="deleteApp(${app.id})">X</div><div class="icon-box">${app.icon}</div><div class="app-label">${app.name}</div>`;
+                div.onmousedown = (e) => {
+                    if(e.target.className === 'del-btn') return;
+                    let isDrag = false, start = Date.now();
+                    let ox = e.clientX - div.offsetLeft, oy = e.clientY - div.offsetTop;
+                    document.onmousemove = (ev) => {
+                        if(Date.now() - start > 150) {
+                            isDrag = true;
+                            div.style.left = (ev.clientX - ox) + 'px';
+                            div.style.top = (ev.clientY - oy) + 'px';
+                        }
+                    };
+                    document.onmouseup = () => {
+                        document.onmousemove = null;
+                        if(!isDrag) {
+                            if(app.action.startsWith('http') || app.action.startsWith('roblox')) window.open(app.action, '_blank');
+                            else openWin(app.action);
+                        } else {
+                            if(userData.useGrid !== false) {
+                                div.style.left = Math.round(parseInt(div.style.left)/100)*100 + 20 + 'px';
+                                div.style.top = Math.round(parseInt(div.style.top)/100)*100 + 20 + 'px';
+                            }
+                            if(auth.currentUser) {
+                                app.x = div.style.left; app.y = div.style.top;
+                                db.collection("users").doc(auth.currentUser.uid).update({ apps: userData.apps });
+                            }
+                        }
+                    };
+                };
+                d.appendChild(div);
+            });
+            setupDragging();
+        }
+
+        function installApp(n, a, i) {
+            let apps = userData.apps || [];
+            if(apps.some(x => x.name === n)) return;
+            apps.push({name:n, action:a, icon:i, id:Date.now(), x:'20px', y:'20px'});
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ apps: apps });
+        }
+
+        function deleteApp(id) {
+            let apps = userData.apps.filter(a => a.id !== id);
+            db.collection("users").doc(auth.currentUser.uid).update({ apps: apps });
+        }
+
+        function addCustom() {
+            const n = document.getElementById('cust-name').value;
+            let u = document.getElementById('cust-url').value;
+            if(n && u) {
+                if(!u.startsWith('http')) u = 'https://' + u;
+                installApp(n, u, '🌐');
+                closeWin('add-app-win');
+            }
+        }
+
+        function openWin(id) { document.getElementById(id).style.display = 'flex'; document.getElementById(id).style.zIndex = ++topZ; }
+        function closeWin(id) { document.getElementById(id).style.display = 'none'; }
+
+        function toggleFullscreen(id) {
+            const win = document.getElementById(id);
+            if (!winRestoreStates[id]) {
+                winRestoreStates[id] = { w: win.style.width, h: win.style.height, t: win.style.top, l: win.style.left };
+                win.style.width = '100vw';
+                win.style.height = 'calc(100vh - 60px)';
+                win.style.top = '0';
+                win.style.left = '0';
+                win.style.boxShadow = 'none';
+            } else {
+                win.style.width = winRestoreStates[id].w;
+                win.style.height = winRestoreStates[id].h;
+                win.style.top = winRestoreStates[id].t;
+                win.style.left = winRestoreStates[id].l;
+                win.style.boxShadow = '12px 12px 0px #000';
+                delete winRestoreStates[id];
+            }
+        }
+
+        function toggleSystemFullscreen() {
+            if (!document.fullscreenElement) {
+                if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+                else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+                else if (document.documentElement.msRequestFullscreen) document.documentElement.msRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
+            }
+        }
+
+        function logout() { auth.signOut().then(() => location.reload()); }
+
+        function setAvatar() {
+            const avatar = document.getElementById('avatar-input').value.trim();
+            if(!avatar) return alert("Paste an image URL first!");
+            const hudAvatar = document.getElementById('hud-avatar');
+            const taskbarAvatar = document.getElementById('taskbar-avatar');
+            hudAvatar.src = avatar; hudAvatar.style.display = 'block';
+            taskbarAvatar.src = avatar; taskbarAvatar.style.display = 'inline-block';
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ avatar });
+        }
+
+        function saveSettings() {
+            const updates = {
+                bg: document.getElementById('bg-input').value,
+                nickname: document.getElementById('nick-input').value,
+                accent: document.getElementById('color-input').value,
+                font: document.getElementById('font-input').value,
+                useGrid: document.getElementById('grid-toggle').checked,
+                avatar: document.getElementById('avatar-input').value
+            };
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update(updates);
+        }
+
+        function addFriend() {
+            const e = document.getElementById('friend-email').value.toLowerCase().trim();
+            let f = userData.friends || [];
+            if(e && !f.includes(e)) { f.push(e); db.collection("users").doc(auth.currentUser.uid).update({ friends: f }); }
+        }
+
+        function renderFriends() {
+            const l = document.getElementById('friends-list'); l.innerHTML = '';
+            (userData.friends || []).forEach(f => {
+                l.innerHTML += `<div class="friend-row"><span>${f}</span><button onclick="removeFriend('${f}')" style="color:red; background:none; border:none;">X</button></div>`;
+            });
+        }
+
+        function removeFriend(email) {
+            let f = userData.friends.filter(x => x !== email);
+            db.collection("users").doc(auth.currentUser.uid).update({ friends: f });
+        }
+
+        function syncNotes() {
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ notes: document.getElementById('notes-area').value });
+        }
+
+        function setupDragging() {
+            document.querySelectorAll('.os-window').forEach(win => {
+                win.querySelector('.window-header').onmousedown = (e) => {
+                    if (winRestoreStates[win.id]) return;
+                    win.style.zIndex = ++topZ;
+                    let ox = e.clientX - win.offsetLeft, oy = e.clientY - win.offsetTop;
+                    document.onmousemove = (ev) => { win.style.left = (ev.clientX - ox) + 'px'; win.style.top = (ev.clientY - oy) + 'px'; };
+                    document.onmouseup = () => document.onmousemove = null;
+                };
+            });
+        }
+
+        setInterval(() => { 
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleDateString([], {month:'short', day:'numeric'}) + '  ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); 
+        }, 1000);
+
+        function loadGame(url) {
+            const container = document.getElementById('games-frame-container');
+            container.innerHTML = '';
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.frameBorder = '0';
+            iframe.allowFullscreen = true;
+            iframe.setAttribute('scrolling', 'none');
+            iframe.style.position = 'absolute';
+            iframe.style.top = '0';
+            iframe.style.left = '0';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            container.appendChild(iframe);
+        }
+
+        // Re-scale game iframe when window is fullscreened
+        const _origToggleFullscreen = toggleFullscreen;
+        toggleFullscreen = function(id) {
+            _origToggleFullscreen(id);
+            if (id === 'games-win') {
+                // iframe already uses 100% width/height so it auto-fills
+            }
+        };
+
+        function toggleAddGameForm() {
+            const form = document.getElementById('add-game-form');
+            form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function submitNewGame() {
+            const name = document.getElementById('new-game-name').value.trim();
+            const iframeCode = document.getElementById('new-game-iframe').value.trim();
+            if (!name || !iframeCode) return alert("Fill in both fields!");
+            // Extract src from iframe code
+            const srcMatch = iframeCode.match(/src=["']([^"']+)["']/i);
+            if (!srcMatch) return alert("Couldn't find a src URL in that iframe code!");
+            const src = srcMatch[1];
+            const gamesDoc = db.collection("global").doc("games");
+            const snap = await gamesDoc.get();
+            const existing = snap.exists ? (snap.data().list || []) : [];
+            existing.push({ name, src });
+            await gamesDoc.set({ list: existing });
+            document.getElementById('new-game-name').value = '';
+            document.getElementById('new-game-iframe').value = '';
+            document.getElementById('add-game-form').style.display = 'none';
+            renderGameButtons(existing);
+            alert("Game added for all users!");
+        }
+
+        function renderGameButtons(gamesList) {
+            const container = document.getElementById('games-list');
+            // Remove any previously added dynamic buttons (keep Highway Traffic + Add Game btn)
+            container.querySelectorAll('.dynamic-game-btn').forEach(b => b.remove());
+            (gamesList || []).forEach(g => {
+                const btn = document.createElement('button');
+                btn.className = 'os-btn dynamic-game-btn';
+                btn.style.fontSize = '10px';
+                btn.innerText = g.name.toUpperCase();
+                btn.onclick = () => loadGame(g.src);
+                // Insert before the add-game-btn
+                const addBtn = document.getElementById('add-game-btn');
+                container.insertBefore(btn, addBtn);
+            });
+        }
+
+        // Load global games list from Firestore on open
+        function loadGlobalGames() {
+            db.collection("global").doc("games").onSnapshot(snap => {
+                if (snap.exists) renderGameButtons(snap.data().list || []);
+            });
+        }
+
+        loadGlobalGames();
+
+        // CLOCK APP
+        function clockTab(tab) {
+            ['stopwatch','timer','alarm'].forEach(t => {
+                document.getElementById('panel-' + t).style.display = t === tab ? 'flex' : 'none';
+                document.getElementById('tab-' + t).style.background = t === tab ? 'var(--accent)' : '#222';
+                document.getElementById('tab-' + t).style.color = t === tab ? '#000' : '#fff';
+            });
+        }
+
+        // STOPWATCH
+        let swInterval, swMs = 0, swRunning = false;
+        function swStart() {
+            if(swRunning) return;
+            swRunning = true;
+            const start = Date.now() - swMs;
+            swInterval = setInterval(() => {
+                swMs = Date.now() - start;
+                const mins = Math.floor(swMs / 60000);
+                const secs = Math.floor((swMs % 60000) / 1000);
+                const cs = Math.floor((swMs % 1000) / 10);
+                document.getElementById('sw-display').innerText =
+                    String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0') + '.' + String(cs).padStart(2,'0');
+            }, 50);
+        }
+        function swStop() { clearInterval(swInterval); swRunning = false; }
+        function swReset() { swStop(); swMs = 0; document.getElementById('sw-display').innerText = '00:00.00'; }
+
+        // TIMER
+        let tmInterval, tmSeconds = 0, tmRunning = false;
+        function tmStart() {
+            if(tmRunning) return;
+            const m = parseInt(document.getElementById('tm-min').value) || 0;
+            const s = parseInt(document.getElementById('tm-sec').value) || 0;
+            if(tmSeconds === 0) tmSeconds = m * 60 + s;
+            if(tmSeconds <= 0) return alert("Set a time first!");
+            tmRunning = true;
+            tmInterval = setInterval(() => {
+                tmSeconds--;
+                const mins = Math.floor(tmSeconds / 60);
+                const secs = tmSeconds % 60;
+                document.getElementById('tm-display').innerText = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+                if(tmSeconds <= 0) {
+                    clearInterval(tmInterval);
+                    tmRunning = false;
+                    document.getElementById('tm-display').innerText = 'DONE!';
+                    alert("⏱️ Timer finished!");
+                }
+            }, 1000);
+        }
+        function tmStop() { clearInterval(tmInterval); tmRunning = false; }
+        function tmReset() { tmStop(); tmSeconds = 0; document.getElementById('tm-display').innerText = '00:00'; document.getElementById('tm-min').value=''; document.getElementById('tm-sec').value=''; }
+
+        // ALARM
+        let alarmTime = null;
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('al-clock').innerText = now.toLocaleTimeString();
+            if(alarmTime) {
+                const [ah, am] = alarmTime.split(':');
+                if(now.getHours() == ah && now.getMinutes() == am && now.getSeconds() === 0) {
+                    alert("⏰ ALARM! " + alarmTime);
+                    alClear();
+                }
+            }
+        }, 1000);
+        function alSet() {
+            const t = document.getElementById('al-time').value;
+            if(!t) return alert("Pick a time first!");
+            alarmTime = t;
+            document.getElementById('al-status').innerText = 'ALARM SET FOR ' + t;
+            document.getElementById('al-status').style.color = 'var(--accent)';
+        }
+        function alClear() {
+            alarmTime = null;
+            document.getElementById('al-status').innerText = 'NO ALARM SET';
+            document.getElementById('al-status').style.color = '#888';
+        }
+
+        let calcCurrentInput = '';
+        function calcInput(val) {
+            if(calcCurrentInput === '0' && val !== '.') calcCurrentInput = '';
+            calcCurrentInput += val;
+            document.getElementById('calc-display').innerText = calcCurrentInput;
+        }
+        function calcClear() {
+            calcCurrentInput = '';
+            document.getElementById('calc-display').innerText = '0';
+        }
+        function calcEquals() {
+            try {
+                let result = Function('"use strict"; return (' + calcCurrentInput.replace('%', '/100') + ')')();
+                calcCurrentInput = String(parseFloat(result.toFixed(10)));
+                document.getElementById('calc-display').innerText = calcCurrentInput;
+            } catch(e) {
+                document.getElementById('calc-display').innerText = 'ERROR';
+                calcCurrentInput = '';
+            }
+        }
+
+        let sInterval;
+        function startSnake() {
+            const c = document.getElementById('snake-canvas'), ctx = c.getContext('2d');
+            let sn = [{x:10,y:10}], d={x:1,y:0}, f={x:5,y:5};
+            if(sInterval) clearInterval(sInterval);
+            sInterval = setInterval(() => {
+                let h = {x:sn[0].x+d.x, y:sn[0].y+d.y};
+                if(h.x===f.x && h.y===f.y) f={x:Math.floor(Math.random()*20), y:Math.floor(Math.random()*20)}; else sn.pop();
+                if(h.x<0||h.x>=20||h.y<0||h.y>=20) return clearInterval(sInterval);
+                sn.unshift(h);
+                ctx.fillStyle="#000"; ctx.fillRect(0,0,300,300);
+                ctx.fillStyle="red"; ctx.fillRect(f.x*15,f.y*15,14,14);
+                ctx.fillStyle=userData.accent || "#2ecc71"; sn.forEach(p=>ctx.fillRect(p.x*15,p.y*15,14,14));
+            }, 100);
+            window.onkeydown = (e) => {
+                if(e.key==='ArrowUp') d={x:0,y:-1}; if(e.key==='ArrowDown') d={x:0,y:1};
+                if(e.key==='ArrowLeft') d={x:-1,y:0}; if(e.key==='ArrowRight') d={x:1,y:0};
+            };
+        }
+    </script>
+</body>
+</html>
