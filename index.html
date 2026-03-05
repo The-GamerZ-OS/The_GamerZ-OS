@@ -243,6 +243,7 @@
             <div class="window-header">
                 <span>CREATE APP</span>
                 <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('add-app-win')">□</button>
                     <button class="win-btn win-close" onclick="closeWin('add-app-win')">✖</button>
                 </div>
             </div>
@@ -257,6 +258,7 @@
             <div class="window-header">
                 <span>G-STORE</span>
                 <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('store-win')">□</button>
                     <button class="win-btn win-close" onclick="closeWin('store-win')">✖</button>
                 </div>
             </div>
@@ -270,6 +272,15 @@
                 <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Games', 'games-win', '🎮')">INSTALL G-GAMES</button>
                 <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Calculator', 'calc-win', '🔢')">INSTALL CALCULATOR</button>
                 <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Clock', 'clock-win', '⏱️')">INSTALL CLOCK / TIMER</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Browser', 'browser-win', '🌐')">INSTALL G-BROWSER</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Paint', 'paint-win', '🎨')">INSTALL G-PAINT</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Tasks', 'todo-win', '✅')">INSTALL G-TASKS</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Profiles', 'profiles-win', '👤')">INSTALL PROFILES</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Leaderboard', 'leaderboard-win', '🏆'); loadLeaderboard()">INSTALL LEADERBOARD</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Weather', 'weather-win', '⛅')">INSTALL WEATHER</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Photo Viewer', 'photo-win', '🖼️')">INSTALL PHOTO VIEWER</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Rich Notes', 'richnotes-win', '📝')">INSTALL RICH NOTES</button>
+                <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Pomodoro', 'pomodoro-win', '🍅')">INSTALL POMODORO</button>
                 <button class="os-btn" style="width:100%;" onclick="installApp('Settings', 'settings-win', '⚙️')">INSTALL SETTINGS</button>
             </div>
         </div>
@@ -398,6 +409,179 @@
                 </div>
                 <div id="al-status" style="font-size:11px; color:#888;">NO ALARM SET</div>
             </div>
+        </div>
+
+        <!-- BROWSER APP -->
+        <div id="browser-win" class="os-window" style="width:600px; height:450px;">
+            <div class="window-header">
+                <span>🌐 G-BROWSER</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('browser-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('browser-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:8px; background:#222; border-bottom:1px solid #333; display:flex; gap:8px;">
+                <input type="text" id="browser-url" placeholder="Enter URL..." style="flex:1; margin:0; font-size:12px;">
+                <button class="os-btn" style="margin:0;" onclick="loadBrowser()">GO</button>
+            </div>
+            <div style="flex:1; background:#000; overflow:hidden;">
+                <iframe id="browser-frame" src="" width="100%" height="100%" frameborder="0" style="border:none; width:100%; height:100%;"></iframe>
+            </div>
+        </div>
+
+        <!-- PAINT APP -->
+        <div id="paint-win" class="os-window" style="width:520px; height:440px;">
+            <div class="window-header">
+                <span>🎨 G-PAINT</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('paint-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('paint-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:8px; background:#222; border-bottom:1px solid #333; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="color" id="paint-color" value="#2ecc71" style="width:36px; height:36px; padding:2px; margin:0; cursor:pointer;">
+                <input type="range" id="paint-size" min="1" max="40" value="5" style="width:80px; margin:0; border:none; background:none;">
+                <button class="os-btn" style="margin:0; font-size:10px;" onclick="paintMode='draw'">✏️ DRAW</button>
+                <button class="os-btn" style="margin:0; font-size:10px;" onclick="paintMode='erase'">🧹 ERASE</button>
+                <button class="os-btn" style="margin:0; font-size:10px;" onclick="clearCanvas()">🗑️ CLEAR</button>
+                <button class="os-btn" style="margin:0; font-size:10px;" onclick="savePainting()">💾 SAVE</button>
+            </div>
+            <canvas id="paint-canvas" style="flex:1; cursor:crosshair; background:#fff; width:100%; height:320px; display:block;"></canvas>
+        </div>
+
+        <!-- TO-DO APP -->
+        <div id="todo-win" class="os-window" style="width:360px; height:420px;">
+            <div class="window-header">
+                <span>✅ G-TASKS</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('todo-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('todo-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:10px; border-bottom:1px solid #333; display:flex; gap:8px;">
+                <input type="text" id="todo-input" placeholder="New task..." style="flex:1; margin:0;" onkeydown="if(event.key==='Enter') addTodo()">
+                <button class="os-btn" style="margin:0;" onclick="addTodo()">ADD</button>
+            </div>
+            <div id="todo-list" style="flex:1; overflow-y:auto; padding:5px;"></div>
+        </div>
+
+        <!-- USER PROFILES APP -->
+        <div id="profiles-win" class="os-window" style="width:400px; height:450px;">
+            <div class="window-header">
+                <span>👤 PROFILES</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('profiles-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('profiles-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:10px; border-bottom:1px solid #333;">
+                <input type="text" id="profile-search" placeholder="Search by nickname..." style="margin:0;" oninput="searchProfiles(this.value)">
+            </div>
+            <div id="profiles-list" style="flex:1; overflow-y:auto; padding:5px;"></div>
+        </div>
+
+        <!-- SNAKE LEADERBOARD -->
+        <div id="leaderboard-win" class="os-window" style="width:340px; height:400px;">
+            <div class="window-header">
+                <span>🏆 SNAKE LEADERBOARD</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('leaderboard-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('leaderboard-win')">✖</button>
+                </div>
+            </div>
+            <div id="leaderboard-list" style="flex:1; overflow-y:auto; padding:10px;"></div>
+        </div>
+
+        <!-- WEATHER APP -->
+        <div id="weather-win" class="os-window" style="width:360px; height:400px;">
+            <div class="window-header">
+                <span>⛅ WEATHER</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('weather-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('weather-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:10px; border-bottom:1px solid #333; display:flex; gap:8px;">
+                <input type="text" id="weather-city" placeholder="Enter city..." style="flex:1; margin:0;">
+                <button class="os-btn" style="margin:0;" onclick="fetchWeather()">SEARCH</button>
+            </div>
+            <div id="weather-display" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center;">
+                <div style="color:#555; font-size:12px;">Enter a city to see weather</div>
+            </div>
+        </div>
+
+        <!-- PHOTO VIEWER -->
+        <div id="photo-win" class="os-window" style="width:500px; height:420px;">
+            <div class="window-header">
+                <span>🖼️ PHOTO VIEWER</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('photo-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('photo-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:8px; background:#222; border-bottom:1px solid #333; display:flex; gap:8px;">
+                <input type="text" id="photo-url" placeholder="Paste image URL..." style="flex:1; margin:0; font-size:12px;">
+                <button class="os-btn" style="margin:0;" onclick="loadPhoto()">LOAD</button>
+            </div>
+            <div id="photo-display" style="flex:1; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <span style="color:#555; font-size:12px;">PASTE AN IMAGE URL ABOVE</span>
+            </div>
+        </div>
+
+        <!-- RICH NOTES -->
+        <div id="richnotes-win" class="os-window" style="width:500px; height:450px;">
+            <div class="window-header">
+                <span>📝 RICH NOTES</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('richnotes-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('richnotes-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:6px 10px; background:#222; border-bottom:1px solid #333; display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('bold')"><b>B</b></button>
+                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('italic')"><i>I</i></button>
+                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('underline')"><u>U</u></button>
+                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('strikeThrough')"><s>S</s></button>
+                <input type="color" id="rich-color" value="#ffffff" style="width:32px; height:32px; padding:2px; margin:0; cursor:pointer;" onchange="richCmd('foreColor', this.value)">
+                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('insertUnorderedList')">• List</button>
+                <button class="os-btn" style="margin:0; font-size:11px; background:var(--accent); color:#000;" onclick="saveRichNotes()">💾 SAVE</button>
+            </div>
+            <div id="richnotes-area" contenteditable="true" style="flex:1; background:#111; color:#fff; padding:15px; outline:none; overflow-y:auto; font-size:14px; line-height:1.6;"></div>
+        </div>
+
+        <!-- POMODORO -->
+        <div id="pomodoro-win" class="os-window" style="width:320px; height:380px;">
+            <div class="window-header">
+                <span>🍅 POMODORO</span>
+                <div class="win-controls">
+                    <button class="win-btn" onclick="toggleFullscreen('pomodoro-win')">□</button>
+                    <button class="win-btn win-close" onclick="closeWin('pomodoro-win')">✖</button>
+                </div>
+            </div>
+            <div style="padding:20px; display:flex; flex-direction:column; align-items:center; gap:15px; flex:1;">
+                <div id="pomo-mode" style="font-size:12px; font-weight:bold; color:var(--accent); letter-spacing:2px;">FOCUS TIME</div>
+                <div id="pomo-display" style="font-size:64px; font-weight:900; color:#fff; letter-spacing:4px;">25:00</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="os-btn" onclick="pomoStart()">START</button>
+                    <button class="os-btn" onclick="pomoStop()">STOP</button>
+                    <button class="os-btn" onclick="pomoReset()">RESET</button>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:5px;">
+                    <button class="os-btn" style="font-size:10px;" onclick="setPomoMode('focus')">🍅 FOCUS</button>
+                    <button class="os-btn" style="font-size:10px;" onclick="setPomoMode('short')">☕ SHORT</button>
+                    <button class="os-btn" style="font-size:10px;" onclick="setPomoMode('long')">🛋️ LONG</button>
+                </div>
+                <div id="pomo-sessions" style="font-size:11px; color:#888;">Sessions today: 0</div>
+            </div>
+        </div>
+
+        <!-- BOOT SCREEN -->
+        <div id="boot-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="font-size:48px;font-weight:900;letter-spacing:8px;color:#fff;margin-bottom:20px;">GAMERZ OS</div>
+            <div style="width:200px;height:4px;background:#222;border:1px solid #fff;">
+                <div id="boot-bar" style="height:100%;background:var(--accent);width:0%;transition:width 0.1s;"></div>
+            </div>
+            <div id="boot-msg" style="margin-top:15px;font-size:11px;color:#555;letter-spacing:2px;">INITIALIZING...</div>
         </div>
 
         <div id="taskbar">
@@ -994,6 +1178,484 @@
                 if(e.key==='ArrowUp') d={x:0,y:-1}; if(e.key==='ArrowDown') d={x:0,y:1};
                 if(e.key==='ArrowLeft') d={x:-1,y:0}; if(e.key==='ArrowRight') d={x:1,y:0};
             };
+        }
+    </script>
+
+    <!-- NOTIFICATION SYSTEM, MINIMIZE, RIGHT-CLICK, BATTERY, NEW APPS -->
+    <script>
+        // ── BROWSER ──
+        function loadBrowser() {
+            let url = document.getElementById('browser-url').value.trim();
+            if(!url) return;
+            if(!url.startsWith('http')) url = 'https://' + url;
+            document.getElementById('browser-frame').src = url;
+        }
+
+        // ── PAINT ──
+        let paintMode = 'draw', painting = false;
+        function initPaint() {
+            const canvas = document.getElementById('paint-canvas');
+            const ctx = canvas.getContext('2d');
+            // Set canvas resolution to match display size only if not already set
+            if(canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
+                const imgData = canvas.width > 0 ? ctx.getImageData(0, 0, canvas.width, canvas.height) : null;
+                canvas.width = canvas.offsetWidth || 480;
+                canvas.height = canvas.offsetHeight || 320;
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                if(imgData) ctx.putImageData(imgData, 0, 0);
+            }
+            if(canvas._paintInited) return;
+            canvas._paintInited = true;
+            const getPos = e => {
+                const r = canvas.getBoundingClientRect();
+                const src = e.touches ? e.touches[0] : e;
+                return { x: src.clientX - r.left, y: src.clientY - r.top };
+            };
+            const startDraw = e => { painting = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); };
+            const draw = e => {
+                if(!painting) return;
+                const p = getPos(e);
+                ctx.lineWidth = document.getElementById('paint-size').value;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = paintMode === 'erase' ? '#fff' : document.getElementById('paint-color').value;
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                e.preventDefault();
+            };
+            const stopDraw = () => { painting = false; ctx.beginPath(); };
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('touchstart', startDraw, {passive:false});
+            canvas.addEventListener('touchmove', draw, {passive:false});
+            canvas.addEventListener('touchend', stopDraw);
+        }
+        function clearCanvas() { const c = document.getElementById('paint-canvas'); c.getContext('2d').clearRect(0,0,c.width,c.height); }
+        function savePainting() {
+            const canvas = document.getElementById('paint-canvas');
+            const dataUrl = canvas.toDataURL();
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ painting: dataUrl });
+            toast("Painting saved! 🎨", "#2ecc71");
+        }
+        // Init paint when window opens
+        const _origOpenWin = openWin;
+        openWin = function(id) {
+            _origOpenWin(id);
+            if(id === 'paint-win') setTimeout(initPaint, 150);
+            if(id === 'profiles-win') setTimeout(loadProfiles, 100);
+            if(id === 'leaderboard-win') loadLeaderboard();
+            if(id === 'todo-win') renderTodos();
+        };
+
+        // ── TO-DO (saves to Firebase) ──
+        let todos = [];
+        function addTodo() {
+            const input = document.getElementById('todo-input');
+            const text = input.value.trim();
+            if(!text) return;
+            todos.push({ id: String(Date.now()), text, done: false });
+            input.value = '';
+            saveTodos();
+            renderTodos();
+        }
+        function toggleTodo(id) {
+            todos = todos.map(t => String(t.id) === String(id) ? {...t, done: !t.done} : t);
+            saveTodos();
+            renderTodos();
+        }
+        function deleteTodo(id) {
+            todos = todos.filter(t => String(t.id) !== String(id));
+            saveTodos();
+            renderTodos();
+        }
+        function saveTodos() {
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ todos });
+        }
+        function renderTodos() {
+            const list = document.getElementById('todo-list');
+            if(!list) return;
+            list.innerHTML = '';
+            todos.forEach(t => {
+                const div = document.createElement('div');
+                div.style.cssText = 'padding:10px; border-bottom:1px solid #333; display:flex; align-items:center; gap:10px;';
+                div.innerHTML = `
+                    <input type="checkbox" ${t.done?'checked':''} style="width:20px; height:20px; margin:0; cursor:pointer;">
+                    <span style="flex:1; ${t.done?'text-decoration:line-through;color:#555;':''} font-size:13px;">${t.text}</span>
+                    <button style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; font-size:16px;">✖</button>
+                `;
+                div.querySelector('input').onchange = () => toggleTodo(t.id);
+                div.querySelector('button').onclick = () => deleteTodo(t.id);
+                list.appendChild(div);
+            });
+        }
+
+        // ── USER PROFILES ──
+        async function loadProfiles() {
+            const list = document.getElementById('profiles-list');
+            list.innerHTML = '<div style="color:#555; text-align:center; margin-top:20px;">Loading...</div>';
+            const snap = await db.collection("users").get();
+            list.innerHTML = '';
+            snap.forEach(doc => {
+                const d = doc.data();
+                if(!d.nickname) return;
+                let rankClass = '';
+                if(d.rank === 'Owner') rankClass = 'rank-owner';
+                else if(d.rank === 'Admin') rankClass = 'rank-admin';
+                else if(d.rank === 'VIP') rankClass = 'rank-vip';
+                list.innerHTML += `<div style="padding:12px; border-bottom:1px solid #333; display:flex; align-items:center; gap:12px;">
+                    ${d.avatar ? `<img src="${d.avatar}" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);object-fit:cover;">` : `<div style="width:40px;height:40px;border-radius:50%;background:#333;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>`}
+                    <div>
+                        <div class="${rankClass}" style="font-weight:900; font-size:14px;">${d.nickname}</div>
+                        <div style="font-size:10px; color:#888;">[${d.rank || 'Member'}]</div>
+                    </div>
+                </div>`;
+            });
+        }
+        async function searchProfiles(q) {
+            const list = document.getElementById('profiles-list');
+            const snap = await db.collection("users").get();
+            list.innerHTML = '';
+            snap.forEach(doc => {
+                const d = doc.data();
+                if(!d.nickname || !d.nickname.toLowerCase().includes(q.toLowerCase())) return;
+                list.innerHTML += `<div style="padding:12px; border-bottom:1px solid #333; display:flex; align-items:center; gap:12px;">
+                    ${d.avatar ? `<img src="${d.avatar}" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--accent);object-fit:cover;">` : `<div style="width:40px;height:40px;border-radius:50%;background:#333;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>`}
+                    <div>
+                        <div style="font-weight:900; font-size:14px;">${d.nickname}</div>
+                        <div style="font-size:10px; color:#888;">[${d.rank || 'Member'}]</div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        // ── SNAKE LEADERBOARD ──
+        function loadLeaderboard() {
+            db.collection("leaderboard").orderBy("score", "desc").limit(20).onSnapshot(snap => {
+                const list = document.getElementById('leaderboard-list');
+                if(!list) return;
+                list.innerHTML = '';
+                let i = 1;
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const medal = i === 1 ? '🥇' : i === 2 ? '🥈' : i === 3 ? '🥉' : `#${i}`;
+                    list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:900;">${medal} ${d.nickname || 'Unknown'}</span>
+                        <span style="color:var(--accent); font-weight:900;">${d.score}</span>
+                    </div>`;
+                    i++;
+                });
+                if(i === 1) list.innerHTML = '<div style="color:#555; text-align:center; margin-top:30px;">No scores yet! Play Snake to get on the board.</div>';
+            });
+        }
+
+        // Patch Snake to save high score
+        const _origStartSnake = startSnake;
+        startSnake = function() {
+            if(sInterval) clearInterval(sInterval);
+            const c = document.getElementById('snake-canvas'), ctx = c.getContext('2d');
+            let sn = [{x:10,y:10}], d={x:1,y:0}, f={x:5,y:5}, score = 0;
+            sInterval = setInterval(() => {
+                let h = {x:sn[0].x+d.x, y:sn[0].y+d.y};
+                if(h.x===f.x && h.y===f.y) { f={x:Math.floor(Math.random()*20), y:Math.floor(Math.random()*20)}; score++; }
+                else sn.pop();
+                if(h.x<0||h.x>=20||h.y<0||h.y>=20) {
+                    clearInterval(sInterval);
+                    toast(`Game over! Score: ${score}`, '#e74c3c');
+                    if(auth.currentUser && score > 0) {
+                        const nick = userData.nickname || 'Unknown';
+                        db.collection("leaderboard").doc(auth.currentUser.uid).get().then(doc => {
+                            if(!doc.exists || score > (doc.data().score || 0)) {
+                                db.collection("leaderboard").doc(auth.currentUser.uid).set({ nickname: nick, score });
+                                toast(`New high score: ${score}! 🏆`, '#f1c40f');
+                            }
+                        });
+                    }
+                    return;
+                }
+                sn.unshift(h);
+                ctx.fillStyle="#000"; ctx.fillRect(0,0,300,300);
+                ctx.fillStyle="#fff"; ctx.font="12px monospace"; ctx.fillText("Score: "+score, 5, 15);
+                ctx.fillStyle="red"; ctx.fillRect(f.x*15,f.y*15,14,14);
+                ctx.fillStyle=userData.accent||"#2ecc71"; sn.forEach(p=>ctx.fillRect(p.x*15,p.y*15,14,14));
+            }, 100);
+            window.onkeydown = (e) => {
+                if(e.key==='ArrowUp') d={x:0,y:-1};
+                if(e.key==='ArrowDown') d={x:0,y:1};
+                if(e.key==='ArrowLeft') d={x:-1,y:0};
+                if(e.key==='ArrowRight') d={x:1,y:0};
+            };
+        };
+
+        // Load todos from Firebase when user logs in
+        const _origApplyTheme = applyUserTheme;
+        applyUserTheme = function() {
+            _origApplyTheme();
+            if(userData.todos) { todos = userData.todos; renderTodos(); }
+        };
+
+
+        // ── BOOT SCREEN ──
+        (function() {
+            const bar = document.getElementById('boot-bar');
+            const msg = document.getElementById('boot-msg');
+            const msgs = ['LOADING KERNEL...','STARTING SERVICES...','CONNECTING TO CLOUD...','READY!'];
+            let p = 0;
+            const iv = setInterval(() => {
+                p += 2;
+                bar.style.width = p + '%';
+                if(p === 25) msg.innerText = msgs[0];
+                if(p === 50) msg.innerText = msgs[1];
+                if(p === 75) msg.innerText = msgs[2];
+                if(p >= 100) { msg.innerText = msgs[3]; clearInterval(iv); setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; }, 400); }
+            }, 30);
+        })();
+
+        // ── SOUND EFFECTS ──
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ctx.createOscillator(), g = ctx.createGain();
+                o.connect(g); g.connect(ctx.destination);
+                if(type==='click') { o.frequency.value=800; g.gain.setValueAtTime(0.1,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.1); }
+                if(type==='notify') { o.frequency.value=520; g.gain.setValueAtTime(0.15,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3); }
+                if(type==='error') { o.frequency.value=200; g.gain.setValueAtTime(0.1,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.2); }
+                o.start(); o.stop(ctx.currentTime+0.3);
+            } catch(e) {}
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.os-btn').forEach(btn => btn.addEventListener('click', () => playSound('click')));
+        });
+
+        // ── WEATHER ──
+        async function fetchWeather() {
+            const city = document.getElementById('weather-city').value.trim();
+            if(!city) return;
+            const display = document.getElementById('weather-display');
+            display.innerHTML = '<div style="color:#888; margin-top:20px;">Loading...</div>';
+            try {
+                const res = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
+                const data = await res.json();
+                const cur = data.current_condition[0];
+                const desc = cur.weatherDesc[0].value;
+                const temp = cur.temp_C, feels = cur.FeelsLikeC, humidity = cur.humidity, wind = cur.windspeedKmph;
+                const icons = {'Sunny':'☀️','Clear':'🌙','Partly':'⛅','Cloudy':'☁️','Rain':'🌧️','Snow':'❄️','Thunder':'⛈️','Fog':'🌫️','Mist':'🌫️','Overcast':'☁️'};
+                let icon = '🌡️';
+                for(const [k,v] of Object.entries(icons)) { if(desc.includes(k)) { icon=v; break; } }
+                display.innerHTML = `<div style="font-size:64px;">${icon}</div><div style="font-size:36px;font-weight:900;color:var(--accent);">${temp}°C</div><div style="font-size:14px;color:#ccc;margin:5px 0;">${desc}</div><div style="font-size:11px;color:#888;">Feels like ${feels}°C</div><div style="font-size:11px;color:#888;margin-top:8px;">💧 ${humidity}% · 💨 ${wind} km/h</div><div style="font-size:10px;color:#555;margin-top:10px;">${city.toUpperCase()}</div>`;
+                if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ lastWeatherCity: city });
+            } catch(e) { display.innerHTML = '<div style="color:#ff4757;margin-top:20px;">Could not load weather.</div>'; }
+        }
+
+        // ── PHOTO VIEWER ──
+        function loadPhoto() {
+            const url = document.getElementById('photo-url').value.trim();
+            if(!url) return;
+            document.getElementById('photo-display').innerHTML = `<img src="${url}" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.parentNode.innerHTML='<span style=color:#ff4757>Could not load image</span>'">`;
+        }
+
+        // ── RICH NOTES ──
+        function richCmd(cmd, val) { document.execCommand(cmd, false, val||null); }
+        function saveRichNotes() {
+            const content = document.getElementById('richnotes-area').innerHTML;
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ richNotes: content });
+            toast('Rich notes saved! 📝', '#2ecc71');
+        }
+
+        // ── POMODORO ──
+        let pomoInterval, pomoSeconds = 25*60, pomoRunning = false, pomoSessions = 0;
+        const pomoModes = { focus: 25*60, short: 5*60, long: 15*60 };
+        function setPomoMode(mode) {
+            pomoStop(); pomoSeconds = pomoModes[mode];
+            const labels = { focus:'FOCUS TIME', short:'SHORT BREAK ☕', long:'LONG BREAK 🛋️' };
+            document.getElementById('pomo-mode').innerText = labels[mode];
+            updatePomoDisplay();
+        }
+        function updatePomoDisplay() {
+            const m = Math.floor(pomoSeconds/60), s = pomoSeconds%60;
+            document.getElementById('pomo-display').innerText = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+        }
+        function pomoStart() {
+            if(pomoRunning) return; pomoRunning = true;
+            pomoInterval = setInterval(() => {
+                pomoSeconds--;
+                updatePomoDisplay();
+                if(pomoSeconds <= 0) {
+                    pomoStop(); pomoSessions++;
+                    document.getElementById('pomo-sessions').innerText = `Sessions today: ${pomoSessions}`;
+                    playSound('notify');
+                    toast('🍅 Pomodoro done! Take a break!', '#e74c3c');
+                    if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ pomodoroSessions: firebase.firestore.FieldValue.increment(1) });
+                }
+            }, 1000);
+        }
+        function pomoStop() { clearInterval(pomoInterval); pomoRunning = false; }
+        function pomoReset() { pomoStop(); pomoSeconds = pomoModes['focus']; updatePomoDisplay(); }
+
+        // ── ONLINE STATUS ──
+        function setOnlineStatus(status) {
+            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ status });
+        }
+        auth.onAuthStateChanged(u => {
+            if(u) { setOnlineStatus('online'); window.addEventListener('beforeunload', () => setOnlineStatus('offline')); }
+        });
+
+        // ── FRIEND MESSAGE NOTIFICATIONS ──
+        let lastMsgCheck = Date.now();
+        function startFriendNotifications() {
+            if(!auth.currentUser || !userData.nickname) return;
+            const myName = userData.nickname.toLowerCase();
+            (userData.friends || []).forEach(friend => {
+                const friendName = friend.toLowerCase().replace('@gamerzos.com','');
+                const names = [myName, friendName].sort();
+                const room = `gamerz_dm_${names[0]}_${names[1]}`;
+                setInterval(async () => {
+                    if(currentRoom === room) return;
+                    try {
+                        const res = await fetch(`https://ntfy.sh/${room}/json?since=${lastMsgCheck}`);
+                        const text = await res.text();
+                        if(text.trim()) {
+                            text.trim().split('\n').forEach(line => {
+                                try {
+                                    const data = JSON.parse(JSON.parse(line).message);
+                                    if(data.u !== userData.nickname) { playSound('notify'); toast(`💬 New message from ${data.u}`, '#075e54'); }
+                                } catch(e) {}
+                            });
+                            lastMsgCheck = Date.now();
+                        }
+                    } catch(e) {}
+                }, 15000);
+            });
+        }
+
+        // ── PATCH openWin for new apps ──
+        const _origOpenWin2 = openWin;
+        openWin = function(id) {
+            _origOpenWin2(id);
+            if(id === 'weather-win' && userData.lastWeatherCity) { document.getElementById('weather-city').value = userData.lastWeatherCity; fetchWeather(); }
+            if(id === 'richnotes-win' && userData.richNotes) document.getElementById('richnotes-area').innerHTML = userData.richNotes;
+        };
+
+        // ── PATCH applyUserTheme for new data ──
+        const _origApplyTheme2 = applyUserTheme;
+        applyUserTheme = function() {
+            _origApplyTheme2();
+            setTimeout(startFriendNotifications, 2000);
+        };
+
+        // ── SHOW ONLINE STATUS IN FRIENDS LIST ──
+        const _origRenderFriends = renderFriends;
+        renderFriends = function() {
+            const l = document.getElementById('friends-list'); l.innerHTML = '';
+            (userData.friends || []).forEach(f => {
+                const friendNick = f.replace('@gamerzos.com','');
+                db.collection("users").where("nickname", "==", friendNick).limit(1).get().then(snap => {
+                    const status = snap.empty ? 'offline' : (snap.docs[0].data().status || 'offline');
+                    const dot = status === 'online' ? '🟢' : '⚫';
+                    const div = document.createElement('div');
+                    div.className = 'friend-row';
+                    div.innerHTML = `<span>${dot} ${f}</span><button style="color:red;background:none;border:none;cursor:pointer;font-weight:bold;">X</button>`;
+                    div.querySelector('button').onclick = () => removeFriend(f);
+                    l.appendChild(div);
+                });
+            });
+        };
+
+        function toast(msg, color) {
+            const t = document.createElement('div');
+            t.innerText = msg;
+            t.style.cssText = `position:fixed;bottom:80px;right:20px;background:${color||'#222'};color:#fff;border:2px solid ${color||'var(--accent)'};padding:12px 18px;font-weight:bold;font-size:12px;z-index:9999;box-shadow:4px 4px 0 #000;max-width:260px;transition:opacity 0.5s;`;
+            document.body.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 500); }, 3000);
+        }
+
+        // ── MINIMIZE SYSTEM ──
+        let minimizedWindows = {};
+        function minimizeWin(id) {
+            const win = document.getElementById(id);
+            win.style.display = 'none';
+            minimizedWindows[id] = true;
+            renderTaskbarWindows();
+        }
+        function restoreWin(id) {
+            const win = document.getElementById(id);
+            win.style.display = 'flex';
+            win.style.zIndex = ++topZ;
+            delete minimizedWindows[id];
+            renderTaskbarWindows();
+        }
+        function renderTaskbarWindows() {
+            let bar = document.getElementById('minimized-bar');
+            if(!bar) { bar = document.createElement('div'); bar.id = 'minimized-bar'; bar.style.cssText='display:flex;gap:4px;align-items:center;'; document.getElementById('taskbar').querySelector('div').appendChild(bar); }
+            bar.innerHTML = '';
+            Object.keys(minimizedWindows).forEach(id => {
+                const win = document.getElementById(id);
+                const title = win.querySelector('.window-header span').innerText;
+                const btn = document.createElement('button');
+                btn.className = 'os-btn';
+                btn.style.cssText = 'font-size:9px; background:#333; color:#fff; margin:0;';
+                btn.innerText = title;
+                btn.onclick = () => restoreWin(id);
+                bar.appendChild(btn);
+            });
+        }
+        // Patch all windows to add minimize button
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.os-window').forEach(win => {
+                const controls = win.querySelector('.win-controls');
+                if(controls && !win.querySelector('.win-minimize')) {
+                    const minBtn = document.createElement('button');
+                    minBtn.className = 'win-btn win-minimize';
+                    minBtn.innerText = '−';
+                    minBtn.onclick = () => minimizeWin(win.id);
+                    controls.insertBefore(minBtn, controls.firstChild);
+                }
+            });
+        });
+
+        // ── RIGHT-CLICK MENU ──
+        const rcMenu = document.createElement('div');
+        rcMenu.id = 'rc-menu';
+        rcMenu.style.cssText = 'display:none;position:fixed;background:#111;border:2px solid #fff;z-index:9000;min-width:160px;box-shadow:4px 4px 0 #000;';
+        rcMenu.innerHTML = `
+            <div class="rc-item" onclick="rcMenu.style.display='none'; openWin('store-win')">📦 Open Store</div>
+            <div class="rc-item" onclick="rcMenu.style.display='none'; openWin('add-app-win')">➕ Add App</div>
+            <div class="rc-item" onclick="rcMenu.style.display='none'; openWin('settings-win')">⚙️ Settings</div>
+            <div class="rc-item" onclick="rcMenu.style.display='none'; openWin('settings-win')">🖼️ Change Wallpaper</div>
+            <div class="rc-item" onclick="rcMenu.style.display='none'">✖ Close</div>
+        `;
+        document.body.appendChild(rcMenu);
+        const rcStyle = document.createElement('style');
+        rcStyle.innerText = '.rc-item{padding:10px 15px;cursor:pointer;font-size:12px;font-weight:bold;border-bottom:1px solid #333;}.rc-item:hover{background:var(--accent);color:#000;}';
+        document.head.appendChild(rcStyle);
+        document.getElementById('desktop').addEventListener('contextmenu', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            rcMenu.style.display = 'block';
+            rcMenu.style.left = e.clientX + 'px';
+            rcMenu.style.top = e.clientY + 'px';
+        });
+        document.addEventListener('click', e => {
+            if(!rcMenu.contains(e.target)) rcMenu.style.display = 'none';
+        });
+
+        // ── BATTERY INDICATOR ──
+        if(navigator.getBattery) {
+            navigator.getBattery().then(bat => {
+                const battDiv = document.createElement('div');
+                battDiv.id = 'battery-display';
+                battDiv.style.cssText = 'font-weight:900; font-size:11px; margin-right:10px; color:var(--accent);';
+                document.getElementById('clock').before(battDiv);
+                const updateBat = () => {
+                    const pct = Math.round(bat.level * 100);
+                    const icon = bat.charging ? '⚡' : pct > 20 ? '🔋' : '🪫';
+                    battDiv.innerText = icon + ' ' + pct + '%';
+                    battDiv.style.color = pct <= 20 ? '#ff4757' : 'var(--accent)';
+                };
+                updateBat();
+                bat.addEventListener('levelchange', updateBat);
+                bat.addEventListener('chargingchange', updateBat);
+            });
         }
     </script>
 </body>
