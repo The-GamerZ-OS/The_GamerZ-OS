@@ -104,24 +104,6 @@
     <div id="home-screen">
         <div id="desktop"></div>
 
-        <div id="gfiles-win" class="os-window">
-            <div class="window-header">
-                <span>G-FILES (EXPLORER)</span>
-                <div class="win-controls">
-                    <button class="win-btn" onclick="toggleFullscreen('gfiles-win')">□</button>
-                    <button class="win-btn win-close" onclick="closeWin('gfiles-win')">✖</button>
-                </div>
-            </div>
-            <div style="padding:10px; border-bottom:1px solid #fff; display:flex; gap:10px; background:#222;">
-                <input type="file" id="gfile-picker" style="display:none" onchange="processFileUpload(this)">
-                <button class="os-btn" onclick="document.getElementById('gfile-picker').click()">UPLOAD FILE</button>
-                <div style="margin-left:auto; font-size:10px; align-self:center; color:var(--accent);">STORAGE: LOCAL SESSION</div>
-            </div>
-            <div id="gfiles-content">
-                <div style="text-align:center; color:#555; margin-top:50px;">No files uploaded yet.</div>
-            </div>
-        </div>
-
         <div id="chat-pro-win" class="os-window">
             <div class="window-header">
                 <span>G-CHAT PRO</span>
@@ -264,7 +246,6 @@
             </div>
             <div style="padding:15px; overflow-y:auto; flex:1;">
                 <button class="os-btn" style="width:100%; margin-bottom:5px; background: #ce1126; color: #fff; border: none;" onclick="installApp('Roblox', 'roblox://', '🟥')">INSTALL ROBLOX</button>
-                <button class="os-btn" style="width:100%; margin-bottom:5px; background: #3498db; color: #fff; border: none;" onclick="installApp('G-Files', 'gfiles-win', '📁')">INSTALL G-FILES</button>
                 <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Chat Pro', 'chat-pro-win', '💬')">INSTALL G-CHAT PRO</button>
                 <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Friends', 'friends-win', '👥')">INSTALL FRIENDS</button>
                 <button class="os-btn" style="width:100%; margin-bottom:5px;" onclick="installApp('Notes', 'notes-win', '📝')">INSTALL NOTES</button>
@@ -307,7 +288,10 @@
                 </div>
             </div>
             <div id="games-list" style="padding:10px; background:#111; border-bottom:1px solid #333; display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-                <button class="os-btn" style="font-size:10px;" onclick="loadGame('https://classroom2111.github.io/g69/class-583')">HIGHWAY TRAFFIC</button>
+                <button class="os-btn" style="font-size:10px;" onclick="loadGame('https://classroom2111.github.io/g69/class-583')">TOP SPEED</button>
+                <button class="os-btn" style="font-size:10px;" onclick="loadGame('https://classroom2111.github.io/g5/class-450')">SLOPE</button>
+                <button class="os-btn" style="font-size:10px;" onclick="loadGame('https://classroom2111.github.io/g26/class-526')">CLUSTER RUSH</button>
+                <button class="os-btn" style="font-size:10px;" onclick="loadGame('https://classroom2111.github.io/g97/class-522')">HIGHWAY TRAFFIC</button>
                 <button id="add-game-btn" style="display:none; font-size:10px; background:var(--accent); color:#000; border:2px solid var(--accent); padding:8px 15px; cursor:pointer; font-weight:bold; text-transform:uppercase;" onclick="toggleAddGameForm()">+ ADD GAME</button>
             </div>
             <div id="add-game-form" style="display:none; padding:10px; background:#1a1a1a; border-bottom:1px solid #333; gap:8px; flex-direction:column;">
@@ -1038,15 +1022,16 @@
 
         function renderGameButtons(gamesList) {
             const container = document.getElementById('games-list');
-            // Remove any previously added dynamic buttons (keep Highway Traffic + Add Game btn)
             container.querySelectorAll('.dynamic-game-btn').forEach(b => b.remove());
+            // Get static game names to avoid duplicates
+            const staticNames = Array.from(container.querySelectorAll('.os-btn:not(.dynamic-game-btn):not(#add-game-btn)')).map(b => b.innerText.trim().toLowerCase());
             (gamesList || []).forEach(g => {
+                if(staticNames.includes(g.name.toUpperCase().trim().toLowerCase())) return; // skip duplicates
                 const btn = document.createElement('button');
                 btn.className = 'os-btn dynamic-game-btn';
                 btn.style.fontSize = '10px';
                 btn.innerText = g.name.toUpperCase();
                 btn.onclick = () => loadGame(g.src);
-                // Insert before the add-game-btn
                 const addBtn = document.getElementById('add-game-btn');
                 container.insertBefore(btn, addBtn);
             });
