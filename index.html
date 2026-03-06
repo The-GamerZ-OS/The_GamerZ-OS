@@ -307,6 +307,12 @@
                 <div class="store-card" data-name="Bio"><div class="store-icon">✏️</div><div class="store-name">Edit Bio</div><button class="os-btn store-install-btn" onclick="installApp('Bio','bio-win','✏️')">INSTALL</button></div>
                 <div class="store-card" data-name="Chat Rooms"><div class="store-icon">💬</div><div class="store-name">Chat Rooms</div><button class="os-btn store-install-btn" onclick="installApp('Rooms','chatrooms-win','💬'); loadChatRooms()">INSTALL</button></div>
                 <div class="store-card" data-name="Sticky Note"><div class="store-icon">📌</div><div class="store-name">Sticky Note</div><button class="os-btn store-install-btn" onclick="installApp('Sticky','sticky-win','📌')">INSTALL</button></div>
+                <div class="store-card" data-name="User Search"><div class="store-icon">🔍</div><div class="store-name">User Search</div><button class="os-btn store-install-btn" onclick="installApp('Search','usersearch-win','🔍')">INSTALL</button></div>
+                <div class="store-card" data-name="App Stats"><div class="store-icon">📊</div><div class="store-name">App Stats</div><button class="os-btn store-install-btn" onclick="installApp('Stats','appstats-win','📊')">INSTALL</button></div>
+                <div class="store-card" data-name="Achievements"><div class="store-icon">🏅</div><div class="store-name">Achievements</div><button class="os-btn store-install-btn" onclick="installApp('Achievements','achievements-win','🏅')">INSTALL</button></div>
+                <div class="store-card" data-name="Broadcast"><div class="store-icon">📢</div><div class="store-name">Broadcast</div><button class="os-btn store-install-btn" onclick="installApp('Broadcast','broadcast-win','📢')">INSTALL</button></div>
+
+                <div class="store-card" data-name="Slideshow"><div class="store-icon">🎞️</div><div class="store-name">Slideshow</div><button class="os-btn store-install-btn" onclick="installApp('Slideshow','slideshow-win','🎞️')">INSTALL</button></div>
             </div>
         </div>
 
@@ -791,6 +797,61 @@
         <div id="sticky-win" class="os-window" style="width:220px; height:200px; background:#ffd700;">
             <div class="window-header" style="background:#f0c000; color:#000;"><span>📌 STICKY NOTE</span><div class="win-controls"><button class="win-btn" onclick="closeWin('sticky-win')" style="color:#000;">✖</button></div></div>
             <textarea id="sticky-text" placeholder="Write a note..." style="flex:1; background:#ffd700; color:#000; border:none; padding:10px; font-family:var(--font-main); font-size:13px; outline:none; resize:none; width:100%; box-sizing:border-box;" oninput="saveStickyNote()"></textarea>
+        </div>
+
+        <!-- USER SEARCH -->
+        <div id="usersearch-win" class="os-window" style="width:400px; height:450px;">
+            <div class="window-header"><span>🔍 USER SEARCH</span><div class="win-controls"><button class="win-btn" onclick="toggleFullscreen('usersearch-win')">□</button><button class="win-btn win-close" onclick="closeWin('usersearch-win')">✖</button></div></div>
+            <div style="padding:10px; border-bottom:1px solid #333; display:flex; gap:8px;">
+                <input type="text" id="usersearch-input" placeholder="Search by nickname..." style="flex:1; margin:0;" oninput="searchUsers(this.value)">
+            </div>
+            <div id="usersearch-results" style="flex:1; overflow-y:auto; padding:5px;"></div>
+        </div>
+
+        <!-- APP STATS -->
+        <div id="appstats-win" class="os-window" style="width:380px; height:420px;">
+            <div class="window-header"><span>📊 APP STATS</span><div class="win-controls"><button class="win-btn" onclick="toggleFullscreen('appstats-win')">□</button><button class="win-btn win-close" onclick="closeWin('appstats-win')">✖</button></div></div>
+            <div id="appstats-list" style="flex:1; overflow-y:auto; padding:15px;"></div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div id="achievements-win" class="os-window" style="width:420px; height:450px;">
+            <div class="window-header"><span>🏅 ACHIEVEMENTS</span><div class="win-controls"><button class="win-btn" onclick="toggleFullscreen('achievements-win')">□</button><button class="win-btn win-close" onclick="closeWin('achievements-win')">✖</button></div></div>
+            <div id="achievements-list" style="flex:1; overflow-y:auto; padding:15px; display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+        </div>
+
+        <!-- ADMIN BROADCAST -->
+        <div id="broadcast-win" class="os-window" style="width:380px; height:280px;">
+            <div class="window-header"><span>📢 BROADCAST</span><div class="win-controls"><button class="win-btn" onclick="toggleFullscreen('broadcast-win')">□</button><button class="win-btn win-close" onclick="closeWin('broadcast-win')">✖</button></div></div>
+            <div style="padding:20px; flex:1; display:flex; flex-direction:column; gap:12px;">
+                <div style="font-size:11px; color:#888;">Send a system notification to all users when they next log in. Admins and Owner only.</div>
+                <input type="text" id="broadcast-msg" placeholder="Broadcast message..." style="margin:0;">
+                <select id="broadcast-color" style="margin:0;">
+                    <option value="#2ecc71">🟢 Green (Info)</option>
+                    <option value="#e74c3c">🔴 Red (Alert)</option>
+                    <option value="#f1c40f">🟡 Yellow (Warning)</option>
+                    <option value="#3498db">🔵 Blue (Update)</option>
+                </select>
+                <button class="os-btn" style="width:100%; background:var(--accent); color:#000;" onclick="sendBroadcast()">📢 SEND BROADCAST</button>
+            </div>
+        </div>
+
+
+        <!-- WALLPAPER SLIDESHOW -->
+        <div id="slideshow-win" class="os-window" style="width:380px; height:350px;">
+            <div class="window-header"><span>🖼️ WALLPAPER SLIDESHOW</span><div class="win-controls"><button class="win-btn" onclick="toggleFullscreen('slideshow-win')">□</button><button class="win-btn win-close" onclick="closeWin('slideshow-win')">✖</button></div></div>
+            <div style="padding:15px; flex:1; display:flex; flex-direction:column; gap:10px;">
+                <div style="font-size:11px; color:#888;">Add wallpaper URLs, one per line. They'll cycle automatically.</div>
+                <textarea id="slideshow-urls" placeholder="https://example.com/wallpaper1.jpg&#10;https://example.com/wallpaper2.jpg" style="flex:1; background:#111; color:#fff; border:2px solid #333; padding:10px; font-family:monospace; font-size:12px; outline:none; resize:none;"></textarea>
+                <div style="display:flex; gap:8px;">
+                    <input type="number" id="slideshow-interval" value="30" min="5" style="width:80px; margin:0;" placeholder="Secs">
+                    <label style="font-size:11px; align-self:center; color:#888;">seconds per wallpaper</label>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="os-btn" style="flex:1;" onclick="startSlideshow()">▶ START</button>
+                    <button class="os-btn" style="flex:1; background:#333;" onclick="stopSlideshow()">⏹ STOP</button>
+                </div>
+            </div>
         </div>
 
         <!-- BOOT SCREEN -->
@@ -1619,6 +1680,8 @@
                 if(h.x<0||h.x>=20||h.y<0||h.y>=20) {
                     clearInterval(sInterval);
                     toast(`Game over! Score: ${score}`, '#e74c3c');
+                    if(score >= 5) unlockAchievement('snake_5');
+                    if(score >= 20) unlockAchievement('snake_20');
                     if(auth.currentUser && score > 0) {
                         const nick = userData.nickname || 'Unknown';
                         db.collection("leaderboard").doc(auth.currentUser.uid).get().then(doc => {
@@ -2163,6 +2226,225 @@
                 tb.appendChild(scBtn);
             }
         });
+
+        // ── USER SEARCH ──
+        async function searchUsers(q) {
+            const list = document.getElementById('usersearch-results');
+            if(!q.trim()) { list.innerHTML = ''; return; }
+            list.innerHTML = '<div style="color:#555;text-align:center;margin-top:20px;">Searching...</div>';
+            const snap = await db.collection('users').get();
+            list.innerHTML = '';
+            let found = 0;
+            snap.forEach(doc => {
+                const d = doc.data();
+                if(!d.nickname || !d.nickname.toLowerCase().includes(q.toLowerCase())) return;
+                found++;
+                let rankClass = d.rank==='Owner'?'rank-owner':d.rank==='Admin'?'rank-admin':d.rank==='VIP'?'rank-vip':'';
+                const dot = d.status==='online'?'🟢':'⚫';
+                list.innerHTML += `<div style="padding:12px;border-bottom:1px solid #333;display:flex;align-items:center;gap:12px;">
+                    ${d.avatar?`<img src="${d.avatar}" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--accent);object-fit:cover;">`:`<div style="width:44px;height:44px;border-radius:50%;background:#333;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-size:20px;">👤</div>`}
+                    <div style="flex:1;">
+                        <div style="display:flex;align-items:center;gap:6px;"><span class="${rankClass}" style="font-weight:900;font-size:14px;">${d.nickname}</span><span>${dot}</span></div>
+                        <div style="font-size:10px;color:#888;">[${d.rank||'Member'}]${d.bio?` · <i style="color:#aaa">${d.bio}</i>`:''}</div>
+                        ${d.typingWPM?`<div style="font-size:10px;color:#555;">⌨️ Best WPM: ${d.typingWPM}</div>`:''}
+                    </div>
+                </div>`;
+            });
+            if(!found) list.innerHTML = '<div style="color:#555;text-align:center;margin-top:20px;">No users found</div>';
+        }
+
+        // ── APP USAGE STATS ──
+        let appUsageStats = {};
+        function trackAppOpen(name) {
+            appUsageStats[name] = (appUsageStats[name] || 0) + 1;
+            if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({ appStats: appUsageStats });
+        }
+        function renderAppStats() {
+            const list = document.getElementById('appstats-list');
+            if(!list) return;
+            const sorted = Object.entries(appUsageStats).sort((a,b) => b[1]-a[1]);
+            if(!sorted.length) { list.innerHTML = '<div style="color:#555;text-align:center;margin-top:30px;">No data yet. Open some apps!</div>'; return; }
+            const max = sorted[0][1];
+            list.innerHTML = '<div style="font-weight:900;color:var(--accent);margin-bottom:15px;font-size:13px;">YOUR MOST USED APPS</div>';
+            sorted.forEach(([name, count]) => {
+                const pct = Math.round((count/max)*100);
+                list.innerHTML += `<div style="margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:bold;margin-bottom:4px;"><span>${name}</span><span style="color:var(--accent);">${count} opens</span></div>
+                    <div style="background:#222;height:8px;border:1px solid #333;"><div style="background:var(--accent);height:100%;width:${pct}%;transition:width 0.5s;"></div></div>
+                </div>`;
+            });
+        }
+
+        // ── ACHIEVEMENTS ──
+        const ACHIEVEMENTS = [
+            { id:'first_login', icon:'🌟', name:'First Login', desc:'Logged in for the first time' },
+            { id:'snake_5', icon:'🐍', name:'Snake Rookie', desc:'Score 5 in Snake' },
+            { id:'snake_20', icon:'🏆', name:'Snake Master', desc:'Score 20 in Snake' },
+            { id:'first_msg', icon:'💬', name:'Chatterbox', desc:'Sent your first message' },
+            { id:'first_friend', icon:'👥', name:'Social', desc:'Added your first friend' },
+            { id:'customized', icon:'🎨', name:'Stylist', desc:'Changed your theme' },
+            { id:'ten_apps', icon:'📦', name:'App Hoarder', desc:'Installed 10 apps' },
+            { id:'notes_saved', icon:'📝', name:'Scribbler', desc:'Saved your first note' },
+            { id:'typing_50', icon:'⌨️', name:'Fast Fingers', desc:'Typed 50+ WPM' },
+            { id:'pomodoro_5', icon:'🍅', name:'Focused', desc:'Completed 5 pomodoros' },
+        ];
+        function renderAchievements() {
+            const list = document.getElementById('achievements-list');
+            if(!list) return;
+            const earned = userData.achievements || [];
+            list.innerHTML = '';
+            ACHIEVEMENTS.forEach(a => {
+                const has = earned.includes(a.id);
+                list.innerHTML += `<div style="background:${has?'#1a2a1a':'#1a1a1a'};border:2px solid ${has?'var(--accent)':'#333'};padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;opacity:${has?1:0.4};">
+                    <div style="font-size:32px;">${a.icon}</div>
+                    <div style="font-weight:900;font-size:11px;color:${has?'var(--accent)':'#fff'};">${a.name}</div>
+                    <div style="font-size:9px;color:#888;">${a.desc}</div>
+                    ${has?'<div style="font-size:9px;color:var(--accent);">✅ EARNED</div>':'<div style="font-size:9px;color:#555;">🔒 LOCKED</div>'}
+                </div>`;
+            });
+        }
+        function unlockAchievement(id) {
+            if(!auth.currentUser) return;
+            const earned = userData.achievements || [];
+            if(earned.includes(id)) return;
+            earned.push(id);
+            userData.achievements = earned;
+            db.collection('users').doc(auth.currentUser.uid).update({ achievements: earned });
+            const a = ACHIEVEMENTS.find(x => x.id === id);
+            if(a) toast(`🏅 Achievement unlocked: ${a.name} ${a.icon}`, '#f1c40f');
+        }
+
+        // ── ADMIN BROADCAST ──
+        async function sendBroadcast() {
+            const rank = userData.rank;
+            if(rank !== 'Admin' && rank !== 'Owner') { toast('Admins and Owners only!', '#ff4757'); return; }
+            const msg = document.getElementById('broadcast-msg').value.trim();
+            const color = document.getElementById('broadcast-color').value;
+            if(!msg) return;
+            await db.collection('global').doc('broadcast').set({ msg, color, ts: firebase.firestore.FieldValue.serverTimestamp(), from: userData.nickname });
+            document.getElementById('broadcast-msg').value = '';
+            toast('Broadcast sent! 📢', 'var(--accent)');
+        }
+        function listenForBroadcast() {
+            db.collection('global').doc('broadcast').onSnapshot(snap => {
+                if(!snap.exists) return;
+                const d = snap.data();
+                if(!d.ts) return;
+                const lastSeen = parseInt(localStorage.getItem('lastBroadcast') || '0');
+                const msgTime = d.ts.toMillis ? d.ts.toMillis() : 0;
+                if(msgTime > lastSeen) {
+                    localStorage.setItem('lastBroadcast', msgTime);
+                    toast(`📢 ${d.from}: ${d.msg}`, d.color || '#2ecc71');
+                }
+            });
+        }
+
+
+        // ── WALLPAPER SLIDESHOW ──
+        let slideshowInterval = null, slideshowIndex = 0;
+        function startSlideshow() {
+            stopSlideshow();
+            const urls = document.getElementById('slideshow-urls').value.split('\n').map(u => u.trim()).filter(Boolean);
+            const secs = parseInt(document.getElementById('slideshow-interval').value) || 30;
+            if(!urls.length) { toast('Add some URLs first!', '#ff4757'); return; }
+            if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({ slideshowUrls: urls, slideshowInterval: secs });
+            slideshowIndex = 0;
+            const setWall = () => { document.getElementById('wallpaper').style.backgroundImage = `url(${urls[slideshowIndex % urls.length]})`; slideshowIndex++; };
+            setWall();
+            slideshowInterval = setInterval(setWall, secs * 1000);
+            toast('Slideshow started! 🎞️', 'var(--accent)');
+        }
+        function stopSlideshow() {
+            if(slideshowInterval) { clearInterval(slideshowInterval); slideshowInterval = null; }
+        }
+
+        // ── GIF SUPPORT IN CHAT ──
+        const _origPostProMsg2 = postProMsg;
+        postProMsg = async function() {
+            const i = document.getElementById('msg-pro-input');
+            const val = i.value.trim();
+            // If message is a GIF/image URL wrap it
+            if(val.match(/^https?:\/\/.+\.(gif|jpg|jpeg|png|webp)(\?.*)?$/i)) {
+                if(window._inCustomRoom && window._customRoomId) {
+                    await db.collection('chatrooms').doc(window._customRoomId).collection('messages').add({
+                        u: userData.nickname||'User', r: userData.rank||'Member', t: `<img src="${val}" style="max-width:200px;max-height:150px;border-radius:4px;">`, ts: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    i.value = '';
+                } else {
+                    await fetch('https://ntfy.sh/' + currentRoom, { method:'POST', body: JSON.stringify({ u: userData.nickname||'User', r: userData.rank||'Member', t: `<img src="${val}" style="max-width:200px;max-height:150px;border-radius:4px;">` }) });
+                    i.value = '';
+                }
+                unlockAchievement('first_msg');
+                return;
+            }
+            unlockAchievement('first_msg');
+            _origPostProMsg2();
+        };
+
+        // ── APP RATINGS ──
+        async function rateApp(appName, stars) {
+            if(!auth.currentUser) return;
+            await db.collection('appratings').doc(appName).set({ [auth.currentUser.uid]: stars }, { merge: true });
+            toast(`Rated ${appName} ${'⭐'.repeat(stars)}`, '#f1c40f');
+            loadAppRating(appName);
+        }
+        async function loadAppRating(appName) {
+            const doc = await db.collection('appratings').doc(appName).get();
+            if(!doc.exists) return;
+            const ratings = Object.values(doc.data());
+            const avg = (ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1);
+            return avg;
+        }
+
+        // ── PATCH openWin to track stats, achievements, show broadcast ──
+        const _origOpenWin5 = openWin;
+        openWin = function(id) {
+            _origOpenWin5(id);
+            // Track app usage
+            const win = document.getElementById(id);
+            if(win) {
+                const span = win.querySelector('.window-header span');
+                if(span) {
+                    const name = span.innerText.replace(/[🌐🎨🐍🎮🔢⏱️💬👥📝⚙️✅👤🏆⛅🖼️📄🍅🕐🗑️🔒✏️⏳📋🎵📌🔍📊🏅📢🔐🎞️]/g,'').trim();
+                    if(name) trackAppOpen(name);
+                }
+            }
+            if(id==='appstats-win') renderAppStats();
+            if(id==='achievements-win') renderAchievements();
+            if(id==='usersearch-win') document.getElementById('usersearch-input').focus();
+        };
+
+        // ── PATCH applyUserTheme for new features ──
+        const _origApplyTheme5 = applyUserTheme;
+        applyUserTheme = function() {
+            _origApplyTheme5();
+            if(userData.appStats) appUsageStats = userData.appStats;
+            if(userData.slideshowUrls) document.getElementById('slideshow-urls').value = userData.slideshowUrls.join('\n');
+            // Achievement: first login
+            unlockAchievement('first_login');
+            // Achievement: 10 apps
+            if((userData.apps||[]).length >= 10) unlockAchievement('ten_apps');
+            // Achievement: notes saved
+            if(userData.notes) unlockAchievement('notes_saved');
+            // Achievement: typing WPM
+            if((userData.typingWPM||0) >= 50) unlockAchievement('typing_50');
+            // Achievement: pomodoro
+            if((userData.pomodoroSessions||0) >= 5) unlockAchievement('pomodoro_5');
+            // Achievement: friends
+            if((userData.friends||[]).length >= 1) unlockAchievement('first_friend');
+            // Listen for admin broadcasts
+            listenForBroadcast();
+            // Show broadcast window only to admin/owner
+            if(userData.rank === 'Admin' || userData.rank === 'Owner') {
+                document.getElementById('broadcast-win') && (document.getElementById('broadcast-win').style.display = 'none');
+            }
+        };
+
+        // ── PATCH snake to unlock achievements ──
+        const _origStartSnake3 = startSnake;
+        startSnake = function() {
+            _origStartSnake3();
+        };
 
         function toast(msg, color) {
             const t = document.createElement('div');
