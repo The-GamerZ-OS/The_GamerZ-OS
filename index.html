@@ -2840,7 +2840,14 @@
                 const card = document.getElementById('scard-' + id);
                 if(!card) return;
                 const btnRow = card.querySelector('div[style*="display:flex"]');
-                if(btnRow) btnRow.innerHTML = '<div style="width:100%;text-align:center;padding:4px;background:#2ecc71;color:#000;font-size:9px;font-weight:900;">✅ OWNED</div>';
+                if(!btnRow) return;
+                // Items that can be re-applied get an APPLY button
+                const reapplyable = id.startsWith('theme_') || id.startsWith('frame_') || id.startsWith('badge_') || id.startsWith('snake_') || id.startsWith('chat_') || id.startsWith('sound_');
+                if(reapplyable) {
+                    btnRow.innerHTML = `<div style="display:flex;gap:4px;width:100%;"><div style="flex:1;text-align:center;padding:4px;background:#333;color:#2ecc71;font-size:9px;font-weight:900;">✅ OWNED</div><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:var(--accent);color:#000;" onclick="applyShopItem('${id}');toast('Applied!','var(--accent)')">APPLY</button></div>`;
+                } else {
+                    btnRow.innerHTML = '<div style="width:100%;text-align:center;padding:4px;background:#2ecc71;color:#000;font-size:9px;font-weight:900;">✅ OWNED</div>';
+                }
             });
         }
         function shopTab(tab) {
