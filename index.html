@@ -239,16 +239,27 @@
 
         <div id="notes-win" class="os-window">
             <div class="window-header">
-                <span>G-NOTES</span>
+                <span>📝 G-NOTES</span>
                 <div class="win-controls">
                     <button class="win-btn" onclick="toggleFullscreen('notes-win')">□</button>
                     <button class="win-btn win-close" onclick="closeWin('notes-win')">✖</button>
                 </div>
             </div>
-            <textarea id="notes-area" oninput="syncNotes(); updateWordCount()" placeholder="Cloud syncing active..."></textarea>
-            <div style="background:#111; border-top:1px solid #333; padding:5px 12px; font-size:10px; color:#555; display:flex; justify-content:space-between;">
-                <span id="word-count">0 words</span>
-                <span id="char-count">0 chars</span>
+            <div style="display:flex; flex:1; overflow:hidden;">
+                <!-- Sidebar -->
+                <div style="width:130px; background:#0a0a0a; border-right:1px solid #333; display:flex; flex-direction:column;">
+                    <button class="os-btn" style="margin:6px; font-size:10px;" onclick="newNote()">+ NEW NOTE</button>
+                    <div id="notes-list" style="flex:1; overflow-y:auto;"></div>
+                </div>
+                <!-- Editor -->
+                <div style="flex:1; display:flex; flex-direction:column;">
+                    <input type="text" id="note-title-input" placeholder="Note title..." style="margin:0; border:none; border-bottom:1px solid #333; background:#111; padding:8px 12px; font-size:12px; font-weight:bold; color:var(--accent);">
+                    <textarea id="notes-area" oninput="syncNotes(); updateWordCount()" placeholder="Start typing..." style="flex:1; resize:none;"></textarea>
+                    <div style="background:#111; border-top:1px solid #333; padding:5px 12px; font-size:10px; color:#555; display:flex; justify-content:space-between;">
+                        <span id="word-count">0 words</span>
+                        <span id="char-count">0 chars</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -593,24 +604,35 @@
         </div>
 
         <!-- RICH NOTES -->
-        <div id="richnotes-win" class="os-window" style="width:500px; height:450px;">
+        <div id="richnotes-win" class="os-window" style="width:520px; height:460px;">
             <div class="window-header">
-                <span>📝 RICH NOTES</span>
+                <span>📄 RICH NOTES</span>
                 <div class="win-controls">
                     <button class="win-btn" onclick="toggleFullscreen('richnotes-win')">□</button>
                     <button class="win-btn win-close" onclick="closeWin('richnotes-win')">✖</button>
                 </div>
             </div>
-            <div style="padding:6px 10px; background:#222; border-bottom:1px solid #333; display:flex; gap:6px; flex-wrap:wrap;">
-                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('bold')"><b>B</b></button>
-                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('italic')"><i>I</i></button>
-                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('underline')"><u>U</u></button>
-                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('strikeThrough')"><s>S</s></button>
-                <input type="color" id="rich-color" value="#ffffff" style="width:32px; height:32px; padding:2px; margin:0; cursor:pointer;" onchange="richCmd('foreColor', this.value)">
-                <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('insertUnorderedList')">• List</button>
-                <button class="os-btn" style="margin:0; font-size:11px; background:var(--accent); color:#000;" onclick="saveRichNotes()">💾 SAVE</button>
+            <div style="display:flex; flex:1; overflow:hidden;">
+                <!-- Sidebar -->
+                <div style="width:130px; background:#0a0a0a; border-right:1px solid #333; display:flex; flex-direction:column;">
+                    <button class="os-btn" style="margin:6px; font-size:10px;" onclick="newRichNote()">+ NEW NOTE</button>
+                    <div id="richnotes-list" style="flex:1; overflow-y:auto;"></div>
+                </div>
+                <!-- Editor -->
+                <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+                    <input type="text" id="richnote-title-input" placeholder="Note title..." style="margin:0; border:none; border-bottom:1px solid #333; background:#111; padding:8px 12px; font-size:12px; font-weight:bold; color:var(--accent);">
+                    <div style="padding:4px 8px; background:#222; border-bottom:1px solid #333; display:flex; gap:4px; flex-wrap:wrap;">
+                        <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('bold')"><b>B</b></button>
+                        <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('italic')"><i>I</i></button>
+                        <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('underline')"><u>U</u></button>
+                        <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('strikeThrough')"><s>S</s></button>
+                        <input type="color" id="rich-color" value="#ffffff" style="width:28px; height:28px; padding:2px; margin:0; cursor:pointer;" onchange="richCmd('foreColor', this.value)">
+                        <button class="os-btn" style="margin:0; font-size:11px;" onclick="richCmd('insertUnorderedList')">• List</button>
+                        <button class="os-btn" style="margin:0; font-size:11px; background:var(--accent); color:#000;" onclick="saveRichNotes()">💾</button>
+                    </div>
+                    <div id="richnotes-area" contenteditable="true" style="flex:1; background:#111; color:#fff; padding:15px; outline:none; overflow-y:auto; font-size:14px; line-height:1.6;"></div>
+                </div>
             </div>
-            <div id="richnotes-area" contenteditable="true" style="flex:1; background:#111; color:#fff; padding:15px; outline:none; overflow-y:auto; font-size:14px; line-height:1.6;"></div>
         </div>
 
         <!-- POMODORO -->
@@ -920,56 +942,22 @@
                 <button onclick="shopTab('snake')" id="stab-snake" style="flex:1;padding:8px;font-size:10px;font-weight:bold;background:#222;color:#fff;border:none;cursor:pointer;">🐍 SNAKE</button>
                 <button onclick="shopTab('boosts')" id="stab-boosts" style="flex:1;padding:8px;font-size:10px;font-weight:bold;background:#222;color:#fff;border:none;cursor:pointer;">⚡ BOOSTS</button>
             </div>
-            <div id="shop-themes" style="flex:1;overflow-y:auto;padding:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <div class="shop-card"><div style="font-size:28px;">🌈</div><div class="shop-item-name">Rainbow</div><div class="shop-price">500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Rainbow Theme',500,'theme_rainbow')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌸</div><div class="shop-item-name">Sakura</div><div class="shop-price">500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Sakura Theme',500,'theme_sakura')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌊</div><div class="shop-item-name">Deep Ocean</div><div class="shop-price">750 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Deep Ocean',750,'theme_deepocean')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">⚡</div><div class="shop-item-name">Electric</div><div class="shop-price">750 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Electric Theme',750,'theme_electric')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🍬</div><div class="shop-item-name">Candy</div><div class="shop-price">600 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Candy Theme',600,'theme_candy')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌙</div><div class="shop-item-name">Midnight</div><div class="shop-price">600 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Midnight Theme',600,'theme_midnight')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">☢️</div><div class="shop-item-name">Toxic</div><div class="shop-price">800 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Toxic Theme',800,'theme_toxic')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌅</div><div class="shop-item-name">Sunset</div><div class="shop-price">800 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Sunset Theme',800,'theme_sunset')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">❄️</div><div class="shop-item-name">Arctic</div><div class="shop-price">1000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Arctic Theme',1000,'theme_arctic')">BUY</button></div>
+                        <div id="shop-themes" style="flex:1;overflow-y:auto;padding:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                <div class="shop-card" id="scard-theme_rainbow"><div style="font-size:28px;">🌈</div><div class="shop-item-name">Rainbow Theme</div><div class="shop-price">500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Rainbow Theme','theme_rainbow')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Rainbow Theme',500,'theme_rainbow')">BUY</button></div></div><div class="shop-card" id="scard-theme_sakura"><div style="font-size:28px;">🌸</div><div class="shop-item-name">Sakura Theme</div><div class="shop-price">500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Sakura Theme','theme_sakura')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Sakura Theme',500,'theme_sakura')">BUY</button></div></div><div class="shop-card" id="scard-theme_deepocean"><div style="font-size:28px;">🌊</div><div class="shop-item-name">Deep Ocean</div><div class="shop-price">750 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Deep Ocean','theme_deepocean')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Deep Ocean',750,'theme_deepocean')">BUY</button></div></div><div class="shop-card" id="scard-theme_electric"><div style="font-size:28px;">⚡</div><div class="shop-item-name">Electric Theme</div><div class="shop-price">750 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Electric Theme','theme_electric')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Electric Theme',750,'theme_electric')">BUY</button></div></div><div class="shop-card" id="scard-theme_candy"><div style="font-size:28px;">🍬</div><div class="shop-item-name">Candy Theme</div><div class="shop-price">600 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Candy Theme','theme_candy')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Candy Theme',600,'theme_candy')">BUY</button></div></div><div class="shop-card" id="scard-theme_midnight"><div style="font-size:28px;">🌙</div><div class="shop-item-name">Midnight Theme</div><div class="shop-price">600 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Midnight Theme','theme_midnight')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Midnight Theme',600,'theme_midnight')">BUY</button></div></div><div class="shop-card" id="scard-theme_toxic"><div style="font-size:28px;">☢️</div><div class="shop-item-name">Toxic Theme</div><div class="shop-price">800 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Toxic Theme','theme_toxic')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Toxic Theme',800,'theme_toxic')">BUY</button></div></div><div class="shop-card" id="scard-theme_sunset"><div style="font-size:28px;">🌅</div><div class="shop-item-name">Sunset Theme</div><div class="shop-price">800 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Sunset Theme','theme_sunset')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Sunset Theme',800,'theme_sunset')">BUY</button></div></div><div class="shop-card" id="scard-theme_arctic"><div style="font-size:28px;">❄️</div><div class="shop-item-name">Arctic Theme</div><div class="shop-price">1000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Arctic Theme','theme_arctic')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Arctic Theme',1000,'theme_arctic')">BUY</button></div></div>
             </div>
             <div id="shop-frames" style="display:none;flex:1;overflow-y:auto;padding:12px;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <div class="shop-card"><div style="font-size:28px;">✨</div><div class="shop-item-name">Gold Frame</div><div class="shop-price">1000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Gold Frame',1000,'frame_gold')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">💎</div><div class="shop-item-name">Diamond</div><div class="shop-price">2000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Diamond Frame',2000,'frame_diamond')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🔥</div><div class="shop-item-name">Fire Frame</div><div class="shop-price">1500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Fire Frame',1500,'frame_fire')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌊</div><div class="shop-item-name">Ocean Frame</div><div class="shop-price">1500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Ocean Frame',1500,'frame_ocean')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">☠️</div><div class="shop-item-name">Skull Frame</div><div class="shop-price">2500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Skull Frame',2500,'frame_skull')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">👑</div><div class="shop-item-name">Crown Badge</div><div class="shop-price">3000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Crown Badge',3000,'badge_crown')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌈</div><div class="shop-item-name">Rainbow Frame</div><div class="shop-price">2000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Rainbow Frame',2000,'frame_rainbow')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">⚡</div><div class="shop-item-name">Electric Frame</div><div class="shop-price">1800 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Electric Frame',1800,'frame_electric')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌟</div><div class="shop-item-name">Star Badge</div><div class="shop-price">2500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Star Badge',2500,'badge_star')">BUY</button></div>
+                <div class="shop-card" id="scard-frame_gold"><div style="font-size:28px;">✨</div><div class="shop-item-name">Gold Frame</div><div class="shop-price">1000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Gold Frame','frame_gold')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Gold Frame',1000,'frame_gold')">BUY</button></div></div><div class="shop-card" id="scard-frame_diamond"><div style="font-size:28px;">💎</div><div class="shop-item-name">Diamond Frame</div><div class="shop-price">2000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Diamond Frame','frame_diamond')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Diamond Frame',2000,'frame_diamond')">BUY</button></div></div><div class="shop-card" id="scard-frame_fire"><div style="font-size:28px;">🔥</div><div class="shop-item-name">Fire Frame</div><div class="shop-price">1500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Fire Frame','frame_fire')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Fire Frame',1500,'frame_fire')">BUY</button></div></div><div class="shop-card" id="scard-frame_ocean"><div style="font-size:28px;">🌊</div><div class="shop-item-name">Ocean Frame</div><div class="shop-price">1500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Ocean Frame','frame_ocean')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Ocean Frame',1500,'frame_ocean')">BUY</button></div></div><div class="shop-card" id="scard-frame_skull"><div style="font-size:28px;">☠️</div><div class="shop-item-name">Skull Frame</div><div class="shop-price">2500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Skull Frame','frame_skull')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Skull Frame',2500,'frame_skull')">BUY</button></div></div><div class="shop-card" id="scard-badge_crown"><div style="font-size:28px;">👑</div><div class="shop-item-name">Crown Badge</div><div class="shop-price">3000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Crown Badge','badge_crown')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Crown Badge',3000,'badge_crown')">BUY</button></div></div><div class="shop-card" id="scard-frame_rainbow"><div style="font-size:28px;">🌈</div><div class="shop-item-name">Rainbow Frame</div><div class="shop-price">2000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Rainbow Frame','frame_rainbow')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Rainbow Frame',2000,'frame_rainbow')">BUY</button></div></div><div class="shop-card" id="scard-frame_electric"><div style="font-size:28px;">⚡</div><div class="shop-item-name">Electric Frame</div><div class="shop-price">1800 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Electric Frame','frame_electric')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Electric Frame',1800,'frame_electric')">BUY</button></div></div><div class="shop-card" id="scard-badge_star"><div style="font-size:28px;">🌟</div><div class="shop-item-name">Star Badge</div><div class="shop-price">2500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Star Badge','badge_star')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Star Badge',2500,'badge_star')">BUY</button></div></div>
             </div>
             <div id="shop-chat" style="display:none;flex:1;overflow-y:auto;padding:12px;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <div class="shop-card"><div style="font-size:28px;color:#e74c3c;">A</div><div class="shop-item-name">Red Chat</div><div class="shop-price">300 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Red Chat',300,'chat_red')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;color:#3498db;">A</div><div class="shop-item-name">Blue Chat</div><div class="shop-price">300 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Blue Chat',300,'chat_blue')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;color:#2ecc71;">A</div><div class="shop-item-name">Green Chat</div><div class="shop-price">300 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Green Chat',300,'chat_green')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;color:#f1c40f;">A</div><div class="shop-item-name">Gold Chat</div><div class="shop-price">500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Gold Chat',500,'chat_gold')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;color:#9b59b6;">A</div><div class="shop-item-name">Purple Chat</div><div class="shop-price">300 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Purple Chat',300,'chat_purple')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🏷️</div><div class="shop-item-name">VIP Tag</div><div class="shop-price">1000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('VIP Tag',1000,'chat_viptag')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">💫</div><div class="shop-item-name">Star Tag</div><div class="shop-price">1500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Star Tag',1500,'chat_startag')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🔔</div><div class="shop-item-name">Chime Sound</div><div class="shop-price">400 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Chime Sound',400,'sound_chime')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🎮</div><div class="shop-item-name">Game Sound</div><div class="shop-price">400 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Game Sound',400,'sound_game')">BUY</button></div>
+                <div class="shop-card" id="scard-chat_red"><div style="font-size:28px;color:#e74c3c;">A</div><div class="shop-item-name">Red Chat</div><div class="shop-price">300 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Red Chat','chat_red')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Red Chat',300,'chat_red')">BUY</button></div></div><div class="shop-card" id="scard-chat_blue"><div style="font-size:28px;color:#3498db;">A</div><div class="shop-item-name">Blue Chat</div><div class="shop-price">300 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Blue Chat','chat_blue')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Blue Chat',300,'chat_blue')">BUY</button></div></div><div class="shop-card" id="scard-chat_green"><div style="font-size:28px;color:#2ecc71;">A</div><div class="shop-item-name">Green Chat</div><div class="shop-price">300 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Green Chat','chat_green')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Green Chat',300,'chat_green')">BUY</button></div></div><div class="shop-card" id="scard-chat_gold"><div style="font-size:28px;color:#f1c40f;">A</div><div class="shop-item-name">Gold Chat</div><div class="shop-price">500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Gold Chat','chat_gold')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Gold Chat',500,'chat_gold')">BUY</button></div></div><div class="shop-card" id="scard-chat_purple"><div style="font-size:28px;color:#9b59b6;">A</div><div class="shop-item-name">Purple Chat</div><div class="shop-price">300 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Purple Chat','chat_purple')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Purple Chat',300,'chat_purple')">BUY</button></div></div><div class="shop-card" id="scard-chat_viptag"><div style="font-size:28px;">🏷️</div><div class="shop-item-name">VIP Tag</div><div class="shop-price">1000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('VIP Tag','chat_viptag')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('VIP Tag',1000,'chat_viptag')">BUY</button></div></div><div class="shop-card" id="scard-chat_startag"><div style="font-size:28px;">💫</div><div class="shop-item-name">Star Tag</div><div class="shop-price">1500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Star Tag','chat_startag')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Star Tag',1500,'chat_startag')">BUY</button></div></div><div class="shop-card" id="scard-sound_chime"><div style="font-size:28px;">🔔</div><div class="shop-item-name">Chime Sound</div><div class="shop-price">400 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Chime Sound','sound_chime')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Chime Sound',400,'sound_chime')">BUY</button></div></div><div class="shop-card" id="scard-sound_game"><div style="font-size:28px;">🎮</div><div class="shop-item-name">Game Sound</div><div class="shop-price">400 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Game Sound','sound_game')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Game Sound',400,'sound_game')">BUY</button></div></div>
             </div>
             <div id="shop-snake" style="display:none;flex:1;overflow-y:auto;padding:12px;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                <div class="shop-card"><div style="font-size:28px;color:#e74c3c;">🐍</div><div class="shop-item-name">Red Snake</div><div class="shop-price">400 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Red Snake',400,'snake_red')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;color:#3498db;">🐍</div><div class="shop-item-name">Blue Snake</div><div class="shop-price">400 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Blue Snake',400,'snake_blue')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;color:#f1c40f;">🐍</div><div class="shop-item-name">Gold Snake</div><div class="shop-price">800 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Gold Snake',800,'snake_gold')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;color:#9b59b6;">🐍</div><div class="shop-item-name">Purple Snake</div><div class="shop-price">400 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Purple Snake',400,'snake_purple')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🌈</div><div class="shop-item-name">Rainbow Snake</div><div class="shop-price">1500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Rainbow Snake',1500,'snake_rainbow')">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">👻</div><div class="shop-item-name">Ghost Snake</div><div class="shop-price">1200 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyShopItem('Ghost Snake',1200,'snake_ghost')">BUY</button></div>
+                <div class="shop-card" id="scard-snake_red"><div style="font-size:28px;color:#e74c3c;">🐍</div><div class="shop-item-name">Red Snake</div><div class="shop-price">400 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Red Snake','snake_red')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Red Snake',400,'snake_red')">BUY</button></div></div><div class="shop-card" id="scard-snake_blue"><div style="font-size:28px;color:#3498db;">🐍</div><div class="shop-item-name">Blue Snake</div><div class="shop-price">400 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Blue Snake','snake_blue')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Blue Snake',400,'snake_blue')">BUY</button></div></div><div class="shop-card" id="scard-snake_gold"><div style="font-size:28px;color:#f1c40f;">🐍</div><div class="shop-item-name">Gold Snake</div><div class="shop-price">800 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Gold Snake','snake_gold')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Gold Snake',800,'snake_gold')">BUY</button></div></div><div class="shop-card" id="scard-snake_purple"><div style="font-size:28px;color:#9b59b6;">🐍</div><div class="shop-item-name">Purple Snake</div><div class="shop-price">400 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Purple Snake','snake_purple')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Purple Snake',400,'snake_purple')">BUY</button></div></div><div class="shop-card" id="scard-snake_rainbow"><div style="font-size:28px;">🌈</div><div class="shop-item-name">Rainbow Snake</div><div class="shop-price">1500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Rainbow Snake','snake_rainbow')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Rainbow Snake',1500,'snake_rainbow')">BUY</button></div></div><div class="shop-card" id="scard-snake_ghost"><div style="font-size:28px;">👻</div><div class="shop-item-name">Ghost Snake</div><div class="shop-price">1200 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="freeShopItem('Ghost Snake','snake_ghost')">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyShopItem('Ghost Snake',1200,'snake_ghost')">BUY</button></div></div>
             </div>
             <div id="shop-boosts" style="display:none;flex:1;overflow-y:auto;padding:12px;grid-template-columns:1fr 1fr;gap:8px;">
-                <div class="shop-card"><div style="font-size:28px;">⚡</div><div class="shop-item-name">2x XP (1hr)</div><div class="shop-price">500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyBoost('xp2x_1hr',500,3600)">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🚀</div><div class="shop-item-name">2x XP (24hr)</div><div class="shop-price">2000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyBoost('xp2x_24hr',2000,86400)">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">🪙</div><div class="shop-item-name">2x Coins (1hr)</div><div class="shop-price">500 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyBoost('coin2x_1hr',500,3600)">BUY</button></div>
-                <div class="shop-card"><div style="font-size:28px;">💰</div><div class="shop-item-name">2x Coins (24hr)</div><div class="shop-price">2000 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyBoost('coin2x_24hr',2000,86400)">BUY</button></div>
-                <div class="shop-card" style="grid-column:span 2;"><div style="font-size:28px;">🛡️</div><div class="shop-item-name">Snake Shield (3 lives)</div><div class="shop-price">300 🪙</div><button class="os-btn" style="width:100%;font-size:9px;margin:0;" onclick="buyBoost('snake_shield',300,0)">BUY</button></div>
-                <div id="boost-status" style="grid-column:span 2;font-size:11px;color:#888;text-align:center;padding:8px;"></div>
+                <div class="shop-card" id="scard-xp2x_1hr"><div style="font-size:28px;">⚡</div><div class="shop-item-name">2x XP (1hr)</div><div class="shop-price">500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="buyBoost('xp2x_1hr',0,3600)">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyBoost('xp2x_1hr',500,3600)">BUY</button></div></div><div class="shop-card" id="scard-xp2x_24hr"><div style="font-size:28px;">🚀</div><div class="shop-item-name">2x XP (24hr)</div><div class="shop-price">2000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="buyBoost('xp2x_24hr',0,86400)">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyBoost('xp2x_24hr',2000,86400)">BUY</button></div></div><div class="shop-card" id="scard-coin2x_1hr"><div style="font-size:28px;">🪙</div><div class="shop-item-name">2x Coins (1hr)</div><div class="shop-price">500 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="buyBoost('coin2x_1hr',0,3600)">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyBoost('coin2x_1hr',500,3600)">BUY</button></div></div><div class="shop-card" id="scard-coin2x_24hr"><div style="font-size:28px;">💰</div><div class="shop-item-name">2x Coins (24hr)</div><div class="shop-price">2000 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="buyBoost('coin2x_24hr',0,86400)">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyBoost('coin2x_24hr',2000,86400)">BUY</button></div></div><div class="shop-card" id="scard-snake_shield" style="grid-column:span 2;"><div style="font-size:28px;">🛡️</div><div class="shop-item-name">Snake Shield</div><div class="shop-price">300 🪙</div><div style="display:flex;gap:4px;width:100%;"><button class="os-btn" style="flex:1;font-size:9px;margin:0;background:#2ecc71;color:#000;" onclick="buyBoost('snake_shield',0,0)">FREE</button><button class="os-btn" style="flex:1;font-size:9px;margin:0;" onclick="buyBoost('snake_shield',300,0)">BUY</button></div></div><div id="boost-status" style="grid-column:span 2;font-size:11px;color:#888;text-align:center;padding:8px;"></div>
             </div>
-        </div>
+</div>
 
         <!-- G-SPIN -->
         <div id="gspin-win" class="os-window" style="width:340px; height:400px;">
@@ -1146,7 +1134,7 @@
             r.style.setProperty('--accent', userData.accent || "#2ecc71");
             r.style.setProperty('--font-main', userData.font || "'Segoe UI', sans-serif");
             if(userData.bg) document.getElementById('wallpaper').style.backgroundImage = `url('${userData.bg}')`;
-            if(userData.notes) document.getElementById('notes-area').value = userData.notes;
+            loadNotes(); loadRichNotes();
             if(userData.nickname) {
                 document.getElementById('nickname-display').querySelector('span').innerText = userData.nickname;
                 document.getElementById('nav-user').innerText = userData.nickname.toUpperCase();
@@ -1448,8 +1436,147 @@
             db.collection("users").doc(auth.currentUser.uid).update({ friends: f });
         }
 
+        // ── MULTI-NOTES SYSTEM ──
+        let allNotes = {}, currentNoteId = null;
+        function renderNotesList() {
+            const list = document.getElementById('notes-list');
+            if(!list) return;
+            list.innerHTML = '';
+            Object.entries(allNotes).forEach(([id, note]) => {
+                const active = id === currentNoteId;
+                list.innerHTML += `<div onclick="openNote('${id}')" style="padding:8px 10px; font-size:11px; cursor:pointer; background:${active?'var(--accent)':'transparent'}; color:${active?'#000':'#ccc'}; border-bottom:1px solid #1a1a1a; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${note.title||'Untitled'}</span>
+                    <span onclick="event.stopPropagation();deleteNote('${id}')" style="color:${active?'#000':'#555'};margin-left:4px;font-size:10px;">✖</span>
+                </div>`;
+            });
+        }
+        function openNote(id) {
+            // Save current before switching
+            if(currentNoteId && allNotes[currentNoteId]) {
+                allNotes[currentNoteId].content = document.getElementById('notes-area').value;
+                allNotes[currentNoteId].title = document.getElementById('note-title-input').value;
+            }
+            currentNoteId = id;
+            const note = allNotes[id];
+            document.getElementById('notes-area').value = note.content || '';
+            document.getElementById('note-title-input').value = note.title || '';
+            updateWordCount();
+            renderNotesList();
+        }
+        function newNote() {
+            const id = 'note_' + Date.now();
+            allNotes[id] = { title: 'New Note', content: '' };
+            openNote(id);
+            saveAllNotes();
+        }
+        function deleteNote(id) {
+            delete allNotes[id];
+            if(currentNoteId === id) {
+                currentNoteId = null;
+                document.getElementById('notes-area').value = '';
+                document.getElementById('note-title-input').value = '';
+                const keys = Object.keys(allNotes);
+                if(keys.length) openNote(keys[0]);
+            }
+            renderNotesList();
+            saveAllNotes();
+        }
         function syncNotes() {
-            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ notes: document.getElementById('notes-area').value });
+            if(!currentNoteId) return;
+            if(allNotes[currentNoteId]) {
+                allNotes[currentNoteId].content = document.getElementById('notes-area').value;
+                allNotes[currentNoteId].title = document.getElementById('note-title-input').value || 'Untitled';
+            }
+            saveAllNotes();
+            renderNotesList();
+        }
+        function saveAllNotes() {
+            if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({ allNotes });
+        }
+        function loadNotes() {
+            allNotes = userData.allNotes || {};
+            // Migrate old single note
+            if(userData.notes && !Object.keys(allNotes).length) {
+                const id = 'note_default';
+                allNotes[id] = { title: 'My Note', content: userData.notes };
+            }
+            if(!Object.keys(allNotes).length) {
+                const id = 'note_' + Date.now();
+                allNotes[id] = { title: 'My First Note', content: '' };
+            }
+            const firstId = Object.keys(allNotes)[0];
+            openNote(firstId);
+        }
+
+        // ── MULTI RICH NOTES SYSTEM ──
+        let allRichNotes = {}, currentRichNoteId = null;
+        function renderRichNotesList() {
+            const list = document.getElementById('richnotes-list');
+            if(!list) return;
+            list.innerHTML = '';
+            Object.entries(allRichNotes).forEach(([id, note]) => {
+                const active = id === currentRichNoteId;
+                list.innerHTML += `<div onclick="openRichNote('${id}')" style="padding:8px 10px; font-size:11px; cursor:pointer; background:${active?'var(--accent)':'transparent'}; color:${active?'#000':'#ccc'}; border-bottom:1px solid #1a1a1a; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${note.title||'Untitled'}</span>
+                    <span onclick="event.stopPropagation();deleteRichNote('${id}')" style="color:${active?'#000':'#555'};margin-left:4px;font-size:10px;">✖</span>
+                </div>`;
+            });
+        }
+        function openRichNote(id) {
+            if(currentRichNoteId && allRichNotes[currentRichNoteId]) {
+                allRichNotes[currentRichNoteId].content = document.getElementById('richnotes-area').innerHTML;
+                allRichNotes[currentRichNoteId].title = document.getElementById('richnote-title-input').value;
+            }
+            currentRichNoteId = id;
+            const note = allRichNotes[id];
+            document.getElementById('richnotes-area').innerHTML = note.content || '';
+            document.getElementById('richnote-title-input').value = note.title || '';
+            renderRichNotesList();
+        }
+        function newRichNote() {
+            const id = 'rnote_' + Date.now();
+            allRichNotes[id] = { title: 'New Note', content: '' };
+            openRichNote(id);
+            saveAllRichNotes();
+        }
+        function deleteRichNote(id) {
+            delete allRichNotes[id];
+            if(currentRichNoteId === id) {
+                currentRichNoteId = null;
+                document.getElementById('richnotes-area').innerHTML = '';
+                document.getElementById('richnote-title-input').value = '';
+                const keys = Object.keys(allRichNotes);
+                if(keys.length) openRichNote(keys[0]);
+            }
+            renderRichNotesList();
+            saveAllRichNotes();
+        }
+        function saveRichNotes() {
+            if(!currentRichNoteId) return;
+            if(allRichNotes[currentRichNoteId]) {
+                allRichNotes[currentRichNoteId].content = document.getElementById('richnotes-area').innerHTML;
+                allRichNotes[currentRichNoteId].title = document.getElementById('richnote-title-input').value || 'Untitled';
+            }
+            saveAllRichNotes();
+            renderRichNotesList();
+            toast('Rich note saved! 📄', 'var(--accent)');
+        }
+        function saveAllRichNotes() {
+            if(auth.currentUser) db.collection('users').doc(auth.currentUser.uid).update({ allRichNotes });
+        }
+        function loadRichNotes() {
+            allRichNotes = userData.allRichNotes || {};
+            // Migrate old single rich note
+            if(userData.richNotes && !Object.keys(allRichNotes).length) {
+                const id = 'rnote_default';
+                allRichNotes[id] = { title: 'My Rich Note', content: userData.richNotes };
+            }
+            if(!Object.keys(allRichNotes).length) {
+                const id = 'rnote_' + Date.now();
+                allRichNotes[id] = { title: 'My First Rich Note', content: '' };
+            }
+            const firstId = Object.keys(allRichNotes)[0];
+            openRichNote(firstId);
         }
 
         function setupDragging() {
@@ -1980,11 +2107,6 @@
 
         // ── RICH NOTES ──
         function richCmd(cmd, val) { document.execCommand(cmd, false, val||null); }
-        function saveRichNotes() {
-            const content = document.getElementById('richnotes-area').innerHTML;
-            if(auth.currentUser) db.collection("users").doc(auth.currentUser.uid).update({ richNotes: content });
-            toast('Rich notes saved! 📝', '#2ecc71');
-        }
 
         // ── POMODORO ──
         let pomoInterval, pomoSeconds = 25*60, pomoRunning = false, pomoSessions = 0;
@@ -2057,7 +2179,8 @@
         openWin = function(id) {
             _origOpenWin2(id);
             if(id === 'weather-win' && userData.lastWeatherCity) { document.getElementById('weather-city').value = userData.lastWeatherCity; fetchWeather(); }
-            if(id === 'richnotes-win' && userData.richNotes) document.getElementById('richnotes-area').innerHTML = userData.richNotes;
+            if(id === 'richnotes-win') { renderRichNotesList(); }
+            if(id === 'notes-win') { renderNotesList(); }
         };
 
         // ── PATCH applyUserTheme for new data ──
@@ -2701,6 +2824,25 @@
             });
             if(!snap.size) list.innerHTML = '<div style="color:#555;text-align:center;margin-top:20px;">No data yet!</div>';
         }
+        async function freeShopItem(name, id) {
+            const owned = userData.shopItems || [];
+            if(owned.includes(id)) { toast('Already owned! ✅', '#888'); return; }
+            owned.push(id);
+            userData.shopItems = owned;
+            await db.collection('users').doc(auth.currentUser.uid).update({ shopItems: owned });
+            applyShopItem(id);
+            renderShopOwned();
+            toast(`Got ${name} for free! 🎉`, '#2ecc71');
+        }
+        function renderShopOwned() {
+            const owned = userData.shopItems || [];
+            owned.forEach(id => {
+                const card = document.getElementById('scard-' + id);
+                if(!card) return;
+                const btnRow = card.querySelector('div[style*="display:flex"]');
+                if(btnRow) btnRow.innerHTML = '<div style="width:100%;text-align:center;padding:4px;background:#2ecc71;color:#000;font-size:9px;font-weight:900;">✅ OWNED</div>';
+            });
+        }
         function shopTab(tab) {
             ['themes','frames','chat','snake','boosts'].forEach(t => {
                 const el = document.getElementById('shop-'+t);
@@ -2708,6 +2850,7 @@
                 if(el) { el.style.display = t===tab ? 'grid' : 'none'; }
                 if(btn) { btn.style.background = t===tab ? 'var(--accent)' : '#222'; btn.style.color = t===tab ? '#000' : '#fff'; }
             });
+            renderShopOwned();
         }
 
         function applyShopItem(id) {
@@ -2747,13 +2890,14 @@
             updateCoinUI();
             toast(`Bought ${name}! 🎉`, '#2ecc71');
             applyShopItem(id);
+            renderShopOwned();
         }
 
         // ── BOOSTS ──
         let activeBoosts = {};
         async function buyBoost(id, cost, duration) {
-            if(gCoins < cost) { toast(`Need ${cost} 🪙!`, '#ff4757'); return; }
-            gCoins -= cost;
+            if(cost > 0 && gCoins < cost) { toast(`Need ${cost} 🪙!`, '#ff4757'); return; }
+            if(cost > 0) gCoins -= cost;
             const expiry = duration > 0 ? Date.now() + duration*1000 : 0;
             activeBoosts[id] = expiry;
             userData.boosts = activeBoosts;
@@ -3051,6 +3195,7 @@
             // Restore shop items visually
             const owned = userData.shopItems || [];
             owned.forEach(id => applyShopItem(id));
+            renderShopOwned();
             // Restore boosts
             activeBoosts = userData.boosts || {};
         };
@@ -3060,7 +3205,7 @@
         openWin = function(id) {
             _origOpenWin6(id);
             if(id==='gcoins-win') updateCoinUI();
-            if(id==='gcoinshop-win') { updateCoinUI(); shopTab('themes'); }
+            if(id==='gcoinshop-win') { updateCoinUI(); shopTab('themes'); renderShopOwned(); }
             if(id==='gspin-win') updateCoinUI();
             if(id==='shop-boosts') renderBoostStatus();
             if(id==='gcoin-lb-win') loadCoinLeaderboard();
